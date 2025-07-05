@@ -8,10 +8,10 @@
 <p class="text-lg text-[var(--color-text-primary)] mb-8">{{ project.description }}</p>
 
 <div class="card p-6 mb-8">
-    <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner">
+    <div class="relative flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner" style="width: 600px; height: 400px; margin: 0 auto;">
         <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
         
-        <!-- Game Over Overlay -->
+        <!-- Game Over Overlay (now relative to its parent container) -->
         <div id="gameOverOverlay" class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white text-center hidden">
             <h2 class="text-5xl font-bold mb-4" id="gameOverTitle">Game Over!</h2>
             <p class="text-2xl mb-6" id="gameOverScore"></p>
@@ -24,32 +24,61 @@
         
         <div id="game-settings" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner text-left">
             <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Game Settings:</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% if project_id == 'brick_breaker' %}
                 <div>
                     <label for="ballSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Speed:</label>
-                    <input type="range" id="ballSpeed" min="1" max="5" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" id="ballSpeed" min="1" max="10" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                     <span id="ballSpeedValue" class="text-sm text-[var(--color-text-primary)]">2</span>
                 </div>
                 <div>
                     <label for="brickRows" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Rows:</label>
-                    <input type="range" id="brickRows" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" id="brickRows" min="1" max="7" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                     <span id="brickRowsValue" class="text-sm text-[var(--color-text-primary)]">3</span>
+                </div>
+                <div>
+                    <label for="brickCols" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Columns:</label>
+                    <input type="range" id="brickCols" min="3" max="7" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickColsValue" class="text-sm text-[var(--color-text-primary)]">5</span>
+                </div>
+                <div>
+                    <label for="paddleWidth" class="block text-sm font-medium text-[var(--color-text-primary)]">Paddle Width:</label>
+                    <input type="range" id="paddleWidth" min="50" max="150" value="75" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="paddleWidthValue" class="text-sm text-[var(--color-text-primary)]">75</span>
+                </div>
+                <div>
+                    <label for="ballRadius" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Radius:</label>
+                    <input type="range" id="ballRadius" min="5" max="15" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="ballRadiusValue" class="text-sm text-[var(--color-text-primary)]">10</span>
                 </div>
                 {% elif project_id == 'snake_game' %}
                 <div>
                     <label for="snakeSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Snake Speed (ms):</label>
-                    <input type="range" id="snakeSpeed" min="50" max="300" value="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" id="snakeSpeed" min="30" max="200" value="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                     <span id="snakeSpeedValue" class="text-sm text-[var(--color-text-primary)]">100</span>
                 </div>
                 <div>
                     <label for="gridSize" class="block text-sm font-medium text-[var(--color-text-primary)]">Grid Size (px):</label>
-                    <input type="range" id="gridSize" min="10" max="30" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" id="gridSize" min="10" max="40" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                     <span id="gridSizeValue" class="text-sm text-[var(--color-text-primary)]">20</span>
+                </div>
+                <div>
+                    <label for="initialLength" class="block text-sm font-medium text-[var(--color-text-primary)]">Initial Length:</label>
+                    <input type="range" id="initialLength" min="1" max="10" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="initialLengthValue" class="text-sm text-[var(--color-text-primary)]">3</span>
+                </div>
+                <div>
+                    <label for="foodSpawnRate" class="block text-sm font-medium text-[var(--color-text-primary)]">Food Spawn Rate:</label>
+                    <input type="range" id="foodSpawnRate" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="foodSpawnRateValue" class="text-sm text-[var(--color-text-primary)]">5</span>
                 </div>
                 {% else %}
                 <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
                 {% endif %}
+            </div>
+            <div class="mt-6 flex justify-center space-x-4">
+                <button id="resetParamsBtn" class="btn-secondary">Reset Parameters</button>
+                <button id="randomizeParamsBtn" class="btn-secondary">Randomize Parameters</button>
             </div>
         </div>
 
@@ -82,21 +111,77 @@
 
         let gameModule = null;
 
-        // Hyperparameter elements
-        const ballSpeedInput = document.getElementById('ballSpeed');
-        const ballSpeedValueSpan = document.getElementById('ballSpeedValue');
-        const brickRowsInput = document.getElementById('brickRows');
-        const brickRowsValueSpan = document.getElementById('brickRowsValue');
-        const snakeSpeedInput = document.getElementById('snakeSpeed');
-        const snakeSpeedValueSpan = document.getElementById('snakeSpeedValue');
-        const gridSizeInput = document.getElementById('gridSize');
-        const gridSizeValueSpan = document.getElementById('gridSizeValue');
+        // Parameter elements and their default/min/max values
+        const paramsConfig = {
+            brick_breaker: {
+                ballSpeed: { element: document.getElementById('ballSpeed'), valueSpan: document.getElementById('ballSpeedValue'), default: 2, min: 1, max: 10 },
+                brickRows: { element: document.getElementById('brickRows'), valueSpan: document.getElementById('brickRowsValue'), default: 3, min: 1, max: 7 },
+                brickCols: { element: document.getElementById('brickCols'), valueSpan: document.getElementById('brickColsValue'), default: 5, min: 3, max: 7 },
+                paddleWidth: { element: document.getElementById('paddleWidth'), valueSpan: document.getElementById('paddleWidthValue'), default: 75, min: 50, max: 150, step: 5 },
+                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 }
+            },
+            snake_game: {
+                snakeSpeed: { element: document.getElementById('snakeSpeed'), valueSpan: document.getElementById('snakeSpeedValue'), default: 100, min: 30, max: 200, step: 10 },
+                gridSize: { element: document.getElementById('gridSize'), valueSpan: document.getElementById('gridSizeValue'), default: 20, min: 10, max: 40, step: 5 },
+                initialLength: { element: document.getElementById('initialLength'), valueSpan: document.getElementById('initialLengthValue'), default: 3, min: 1, max: 10 },
+                foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
+            }
+        };
+
+        const currentParams = paramsConfig[projectId];
 
         // Update span values on slider change
-        if (ballSpeedInput) ballSpeedInput.oninput = () => ballSpeedValueSpan.textContent = ballSpeedInput.value;
-        if (brickRowsInput) brickRowsInput.oninput = () => brickRowsValueSpan.textContent = brickRowsInput.value;
-        if (snakeSpeedInput) snakeSpeedInput.oninput = () => snakeSpeedValueSpan.textContent = snakeSpeedInput.value;
-        if (gridSizeInput) gridSizeInput.oninput = () => gridSizeValueSpan.textContent = gridSizeInput.value;
+        if (currentParams) {
+            for (const key in currentParams) {
+                const param = currentParams[key];
+                if (param.element) {
+                    param.element.oninput = () => {
+                        param.valueSpan.textContent = param.element.value;
+                    };
+                }
+            }
+        }
+
+        // Reset Parameters Button
+        const resetParamsBtn = document.getElementById('resetParamsBtn');
+        if (resetParamsBtn) {
+            resetParamsBtn.addEventListener('click', () => {
+                if (currentParams) {
+                    for (const key in currentParams) {
+                        const param = currentParams[key];
+                        if (param.element) {
+                            param.element.value = param.default;
+                            param.valueSpan.textContent = param.default;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Randomize Parameters Button
+        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
+        if (randomizeParamsBtn) {
+            randomizeParamsBtn.addEventListener('click', () => {
+                if (currentParams) {
+                    for (const key in currentParams) {
+                        const param = currentParams[key];
+                        if (param.element) {
+                            let randomValue;
+                            if (param.step) {
+                                // For stepped ranges
+                                const numSteps = (param.max - param.min) / param.step;
+                                randomValue = param.min + Math.round(Math.random() * numSteps) * param.step;
+                            } else {
+                                // For continuous ranges
+                                randomValue = Math.floor(Math.random() * (param.max - param.min + 1)) + param.min;
+                            }
+                            param.element.value = randomValue;
+                            param.valueSpan.textContent = randomValue;
+                        }
+                    }
+                }
+            });
+        }
 
         // Prevent scrolling with arrow keys when canvas is focused
         canvas.addEventListener('keydown', function(e) {
@@ -137,16 +222,22 @@
         };
         document.body.appendChild(script);
 
+        function getGameSettings() {
+            const settings = {};
+            if (currentParams) {
+                for (const key in currentParams) {
+                    const param = currentParams[key];
+                    if (param.element) {
+                        settings[key] = parseInt(param.element.value);
+                    }
+                }
+            }
+            return settings;
+        }
+
         startGameBtn.addEventListener('click', () => {
             hideGameOver(); // Hide game over screen if visible
-            const gameSettings = {};
-            if (projectId === 'brick_breaker') {
-                gameSettings.ballSpeed = parseInt(ballSpeedInput.value);
-                gameSettings.brickRows = parseInt(brickRowsInput.value);
-            } else if (projectId === 'snake_game') {
-                gameSettings.snakeSpeed = parseInt(snakeSpeedInput.value);
-                gameSettings.gridSize = parseInt(gridSizeInput.value);
-            }
+            const gameSettings = getGameSettings();
 
             if (gameModule && typeof gameModule.startGame === 'function') {
                 gameModule.startGame(gameSettings);
@@ -159,14 +250,8 @@
 
         restartGameBtn.addEventListener('click', () => {
             hideGameOver();
-            const gameSettings = {};
-            if (projectId === 'brick_breaker') {
-                gameSettings.ballSpeed = parseInt(ballSpeedInput.value);
-                gameSettings.brickRows = parseInt(brickRowsInput.value);
-            } else if (projectId === 'snake_game') {
-                gameSettings.snakeSpeed = parseInt(snakeSpeedInput.value);
-                gameSettings.gridSize = parseInt(gridSizeInput.value);
-            }
+            const gameSettings = getGameSettings();
+
             if (gameModule && typeof gameModule.startGame === 'function') {
                 gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;

@@ -6,19 +6,19 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
 
     // Game variables
     const paddleHeight = 10;
-    const paddleWidth = 75;
-    let paddleX = (canvas.width - paddleWidth) / 2;
+    let paddleWidth; // Will be set by settings
+    let paddleX;
     let rightPressed = false;
     let leftPressed = false;
 
-    const ballRadius = 10;
-    let x = canvas.width / 2;
-    let y = canvas.height - 30;
-    let dx = 2; // Default ball speed
-    let dy = -2; // Default ball speed
+    let ballRadius; // Will be set by settings
+    let x;
+    let y;
+    let dx; // Will be set by settings
+    let dy; // Will be set by settings
 
-    let brickRowCount = 3; // Default brick rows
-    const brickColumnCount = 5;
+    let brickRowCount; // Will be set by settings
+    let brickColumnCount; // Will be set by settings
     const brickWidth = 75;
     const brickHeight = 20;
     const brickPadding = 10;
@@ -141,6 +141,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
             if (!allBricksBroken) break;
         }
         if (allBricksBroken) {
+            gameInfo.textContent = "Brick Breaker: You Win!";
             stopGame();
             window.showGameOver("You Win!", ""); // Call global showGameOver
             return;
@@ -154,14 +155,17 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
             // Apply settings
             dx = settings.ballSpeed || 2;
             dy = -(settings.ballSpeed || 2); // Ball starts moving up
+            ballRadius = settings.ballRadius || 10;
+            paddleWidth = settings.paddleWidth || 75;
             brickRowCount = settings.brickRows || 3;
+            brickColumnCount = settings.brickCols || 5;
 
             // Reset game state
             paddleX = (canvas.width - paddleWidth) / 2;
             x = canvas.width / 2;
             y = canvas.height - 30;
             
-            // Reinitialize bricks based on new row count
+            // Reinitialize bricks based on new row/col count
             bricks = [];
             for (let c = 0; c < brickColumnCount; c++) {
                 bricks[c] = [];

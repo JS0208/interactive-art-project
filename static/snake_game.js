@@ -3,14 +3,14 @@
 window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameRunning = false;
     let animationFrameId = null;
-    let gridSize = 20; // Default grid size
-    let snake = [{ x: 10, y: 10 }];
+    let gridSize; // Will be set by settings
+    let snake; // Will be initialized by settings
     let food = {};
     let dx = 0;
     let dy = 0;
     let score = 0;
     let changingDirection = false;
-    let gameSpeed = 100; // Default game speed in ms
+    let gameSpeed; // Will be set by settings
 
     // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
@@ -120,10 +120,15 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
             // Apply settings
             gameSpeed = settings.snakeSpeed || 100;
             gridSize = settings.gridSize || 20;
+            const initialLength = settings.initialLength || 3;
+            // foodSpawnRate is not directly used in game logic, but can be used for future features
 
             // Reset game state
-            snake = [{ x: 10, y: 10 }];
-            dx = 0;
+            snake = [];
+            for(let i = 0; i < initialLength; i++) {
+                snake.push({x: 10 - i, y: 10});
+            }
+            dx = 1; // Initial direction to the right
             dy = 0;
             score = 0;
             generateFood();
