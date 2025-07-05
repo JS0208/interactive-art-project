@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en" class="theme-default">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,43 +8,115 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
         @layer base {
-            body {
-                @apply bg-gray-100 text-gray-900;
+            /* Default Theme (Light) */
+            .theme-default {
+                --color-bg-primary: #f3f4f6; /* gray-100 */
+                --color-text-primary: #1f2937; /* gray-900 */
+                --color-card-bg: #ffffff;
+                --color-card-shadow: #e5e7eb; /* gray-200 */
+                --color-nav-bg: #1f2937; /* gray-900 */
+                --color-nav-text: #d1d5db; /* gray-300 */
+                --color-nav-hover-text: #ffffff;
+                --color-btn-primary-bg: #2563eb; /* blue-600 */
+                --color-btn-primary-hover-bg: #1d4ed8; /* blue-700 */
+                --color-btn-primary-text: #ffffff;
+                --color-btn-secondary-bg: #d1d5db; /* gray-300 */
+                --color-btn-secondary-hover-bg: #9ca3af; /* gray-400 */
+                --color-btn-secondary-text: #1f2937; /* gray-900 */
             }
-            .dark body {
-                @apply bg-gray-900 text-gray-100;
+
+            /* Dark Theme */
+            .theme-dark {
+                --color-bg-primary: #1f2937; /* gray-900 */
+                --color-text-primary: #f3f4f6; /* gray-100 */
+                --color-card-bg: #374151; /* gray-700 */
+                --color-card-shadow: #111827; /* gray-900 */
+                --color-nav-bg: #111827; /* gray-900 */
+                --color-nav-text: #9ca3af; /* gray-400 */
+                --color-nav-hover-text: #ffffff;
+                --color-btn-primary-bg: #3b82f6; /* blue-500 */
+                --color-btn-primary-hover-bg: #2563eb; /* blue-600 */
+                --color-btn-primary-text: #ffffff;
+                --color-btn-secondary-bg: #4b5563; /* gray-600 */
+                --color-btn-secondary-hover-bg: #6b7280; /* gray-500 */
+                --color-btn-secondary-text: #f3f4f6; /* gray-100 */
+            }
+
+            /* Corporate Blue Theme */
+            .theme-corporate-blue {
+                --color-bg-primary: #e0f2f7; /* light blue */
+                --color-text-primary: #0f172a; /* slate-900 */
+                --color-card-bg: #ffffff;
+                --color-card-shadow: #bfdbfe; /* blue-200 */
+                --color-nav-bg: #1e3a8a; /* blue-900 */
+                --color-nav-text: #bfdbfe; /* blue-200 */
+                --color-nav-hover-text: #ffffff;
+                --color-btn-primary-bg: #1d4ed8; /* blue-700 */
+                --color-btn-primary-hover-bg: #1e40af; /* blue-800 */
+                --color-btn-primary-text: #ffffff;
+                --color-btn-secondary-bg: #93c5fd; /* blue-300 */
+                --color-btn-secondary-hover-bg: #60a5fa; /* blue-400 */
+                --color-btn-secondary-text: #1e3a8a; /* blue-900 */
+            }
+
+            /* Apply variables */
+            body {
+                background-color: var(--color-bg-primary);
+                color: var(--color-text-primary);
             }
             .card {
-                @apply bg-white shadow-lg rounded-lg;
+                background-color: var(--color-card-bg);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* default shadow */
+                border-color: var(--color-card-shadow); /* use shadow color for border */
             }
-            .dark .card {
-                @apply bg-gray-800 shadow-xl;
+            .navbar {
+                background-color: var(--color-nav-bg);
+            }
+            .nav-link {
+                color: var(--color-nav-text);
+            }
+            .nav-link:hover {
+                color: var(--color-nav-hover-text);
             }
             .btn-primary {
-                @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out;
+                background-color: var(--color-btn-primary-bg);
+                color: var(--color-btn-primary-text);
             }
-            .dark .btn-primary {
-                @apply bg-blue-700 hover:bg-blue-800;
+            .btn-primary:hover {
+                background-color: var(--color-btn-primary-hover-bg);
             }
             .btn-secondary {
-                @apply bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out;
+                background-color: var(--color-btn-secondary-bg);
+                color: var(--color-btn-secondary-text);
             }
-            .dark .btn-secondary {
-                @apply bg-gray-700 hover:bg-gray-600 text-gray-200;
+            .btn-secondary:hover {
+                background-color: var(--color-btn-secondary-hover-bg);
             }
         }
     </style>
 </head>
 <body class="font-sans leading-normal tracking-normal transition-colors duration-300">
-    <nav class="bg-gray-800 p-4 shadow-md">
+    <nav class="navbar p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
             <a class="text-white text-3xl font-extrabold tracking-tight" href="/">Interactive Art</a>
             <div class="flex items-center space-x-6">
-                <a class="text-gray-300 hover:text-white text-lg transition-colors duration-200" href="/">Home</a>
-                <a class="text-gray-300 hover:text-white text-lg transition-colors duration-200" href="/projects">Projects</a>
-                <button id="theme-toggle" class="text-gray-300 hover:text-white text-lg transition-colors duration-200 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.042-8.67l-.707-.707M10.95 18.67l-.707.707m8.67-8.042l.707-.707M18.67 10.95l.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
-                </button>
+                <a class="nav-link text-lg transition-colors duration-200" href="/">Home</a>
+                <a class="nav-link text-lg transition-colors duration-200" href="/projects">Projects</a>
+                <div class="relative inline-block text-left">
+                    <button id="theme-dropdown-button" type="button" class="nav-link text-lg focus:outline-none flex items-center" aria-expanded="true" aria-haspopup="true">
+                        Theme
+                        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
+                        <div class="py-1" role="none">
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-default">Default (Light)</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-dark">Dark</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-corporate-blue">Corporate Blue</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -54,30 +126,47 @@
     </div>
 
     <script>
-        const themeToggle = document.getElementById('theme-toggle');
         const htmlElement = document.documentElement;
+        const themeDropdownButton = document.getElementById('theme-dropdown-button');
+        const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
 
-        // Check for saved theme preference
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            htmlElement.classList.add(currentTheme);
+        // Initialize theme from localStorage or system preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlElement.className = savedTheme;
         } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            // Default to system preference if no theme saved
-            htmlElement.classList.add('dark');
+            htmlElement.className = 'theme-dark';
         } else {
-            htmlElement.classList.add('light');
+            htmlElement.className = 'theme-default';
         }
 
-        themeToggle.addEventListener('click', () => {
-            if (htmlElement.classList.contains('light')) {
-                htmlElement.classList.remove('light');
-                htmlElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                htmlElement.classList.remove('dark');
-                htmlElement.classList.add('light');
-                localStorage.setItem('theme', 'light');
+        // Toggle dropdown visibility
+        themeDropdownButton.addEventListener('click', () => {
+            themeDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Hide dropdown when clicking outside
+        window.addEventListener('click', (event) => {
+            if (!themeDropdownButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
+                themeDropdownMenu.classList.add('hidden');
             }
+        });
+
+        // Theme selection logic
+        document.getElementById('theme-default').addEventListener('click', () => {
+            htmlElement.className = 'theme-default';
+            localStorage.setItem('theme', 'theme-default');
+            themeDropdownMenu.classList.add('hidden');
+        });
+        document.getElementById('theme-dark').addEventListener('click', () => {
+            htmlElement.className = 'theme-dark';
+            localStorage.setItem('theme', 'theme-dark');
+            themeDropdownMenu.classList.add('hidden');
+        });
+        document.getElementById('theme-corporate-blue').addEventListener('click', () => {
+            htmlElement.className = 'theme-corporate-blue';
+            localStorage.setItem('theme', 'theme-corporate-blue');
+            themeDropdownMenu.classList.add('hidden');
         });
     </script>
 </body>

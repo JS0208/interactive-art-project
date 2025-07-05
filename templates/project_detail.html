@@ -9,14 +9,22 @@
 
 <div class="card p-6 mb-8">
     <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner">
-        <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700"></canvas>
+        <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
     </div>
     <div class="text-center mt-6">
         <button id="start-game-btn" class="btn-primary text-lg py-3 px-6">Start Game</button>
         <div id="game-info" class="mt-4 text-gray-600 dark:text-gray-400 text-lg font-medium"></div>
         <div id="game-controls" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
-            <!-- Placeholder for future interactive controls (e.g., difficulty, speed) -->
-            <p class="text-sm text-gray-500 dark:text-gray-400">Game controls will appear here.</p>
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Controls:</h3>
+            <ul class="list-disc list-inside text-left mx-auto max-w-md text-gray-700 dark:text-gray-300">
+                {% if project_id == 'brick_breaker' %}
+                <li>Left/Right Arrow Keys: Move Paddle</li>
+                {% elif project_id == 'snake_game' %}
+                <li>Arrow Keys: Change Snake Direction</li>
+                {% else %}
+                <li>No specific controls for this art piece.</li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </div>
@@ -31,12 +39,18 @@
 
         let gameModule = null;
 
+        // Prevent scrolling with arrow keys when canvas is focused
+        canvas.addEventListener('keydown', function(e) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
         // Dynamically load game-specific JavaScript
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = `/static/${projectId}.js`;
         script.onload = () => {
-            // Assuming each game JS file defines a global function like initGame(canvas, ctx, gameInfo)
             if (typeof window[projectId + 'Game'] === 'function') {
                 gameModule = window[projectId + 'Game'](canvas, ctx, gameInfo);
                 gameInfo.textContent = `Ready to play ${projectId.replace(/_/g, ' ')}!`;
@@ -55,6 +69,7 @@
             if (gameModule && typeof gameModule.startGame === 'function') {
                 gameModule.startGame();
                 startGameBtn.disabled = true;
+                canvas.focus(); // Focus canvas to capture key events
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
