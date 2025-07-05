@@ -9,14 +9,19 @@ projects = {
     'colorful_swirls': {
         'name': 'Colorful Swirls',
         'description': 'A generative art piece with swirling colors. Enter Python code to generate patterns.',
-        'code_example': 'import random
+        'code_example': """import random
 for _ in range(10):
-    print(f"Color: {random.choice(["red", "green", "blue"])}")'
+    print(f"Color: {random.choice(["red", "green", "blue"])}")"""
     },
     'particle_flow': {
         'name': 'Particle Flow',
         'description': 'Simulates particle movement based on mathematical functions. Try different equations!',
-        'code_example': 'x = 0\ny = 0\nfor i in range(5):\n    x += i\n    y -= i\n    print(f"Particle at ({x}, {y})")'
+        'code_example': """x = 0
+y = 0
+for i in range(5):
+    x += i
+    y -= i
+    print(f"Particle at ({x}, {y})")"""
     }
 }
 
