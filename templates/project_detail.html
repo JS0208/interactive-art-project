@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} - Interactive Art{% endblock %}
+
+{% block content %}
+<a href="/projects" class="btn btn-secondary mb-3">&larr; Back to Projects</a>
+<h1>{{ project.name }}</h1>
+<p class="lead">{{ project.description }}</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Run Your Python Code
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="code" class="form-label">Enter your Python code here:</label>
+                <textarea class="form-control" id="code" name="code" rows="15">{{ project.code_example if not output else request.form['code'] }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Run Code</button>
+        </form>
+    </div>
+</div>
+
+{% if output is not none %}
+<div class="card mb-4">
+    <div class="card-header">
+        Code Output
+    </div>
+    <div class="card-body">
+        <pre class="bg-light p-3 rounded">{{ output }}</pre>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
