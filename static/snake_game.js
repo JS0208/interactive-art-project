@@ -3,28 +3,126 @@
 window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameRunning = false;
     let animationFrameId = null;
+    const gridSize = 20;
+    let snake = [{ x: 10, y: 10 }];
+    let food = {};
+    let dx = 0;
+    let dy = 0;
+    let score = 0;
+    let changingDirection = false;
+
+    // Event listeners for snake movement
+    document.addEventListener("keydown", changeDirection);
+
+    function generateFood() {
+        food = {
+            x: Math.floor(Math.random() * (canvas.width / gridSize)),
+            y: Math.floor(Math.random() * (canvas.height / gridSize))
+        };
+    }
+
+    function drawSnakePart(snakePart) {
+        ctx.fillStyle = 'lightgreen';
+        ctx.strokeStyle = 'darkgreen';
+        ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+        ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+    }
+
+    function drawFood() {
+        ctx.fillStyle = 'red';
+        ctx.strokeStyle = 'darkred';
+        ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+        ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    }
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#00FF00';
-        ctx.fillRect(100, 100, 20, 20);
-        gameInfo.textContent = "Snake Game: Game running!";
-        // Add your snake game drawing logic here
+        drawFood();
+        snake.forEach(drawSnakePart);
+        gameInfo.textContent = `Snake Game: Score: ${score}`;
     }
 
-    function update() {
-        // Add your snake game logic here
+    function advanceSnake() {
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+        snake.unshift(head);
+
+        const didEatFood = head.x === food.x && head.y === food.y;
+        if (didEatFood) {
+            score += 10;
+            generateFood();
+        } else {
+            snake.pop();
+        }
+    }
+
+    function didGameEnd() {
+        for (let i = 4; i < snake.length; i++) {
+            if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+        }
+        const hitLeftWall = snake[0].x < 0;
+        const hitRightWall = snake[0].x * gridSize >= canvas.width;
+        const hitTopWall = snake[0].y < 0;
+        const hitBottomWall = snake[0].y * gridSize >= canvas.height;
+        return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+    }
+
+    function changeDirection(event) {
+        const LEFT_KEY = 37;
+        const RIGHT_KEY = 39;
+        const UP_KEY = 38;
+        const DOWN_KEY = 40;
+
+        if (changingDirection) return;
+        changingDirection = true;
+
+        const keyPressed = event.keyCode;
+        const goingUp = dy === -1;
+        const goingDown = dy === 1;
+        const goingRight = dx === 1;
+        const goingLeft = dx === -1;
+
+        if (keyPressed === LEFT_KEY && !goingRight) {
+            dx = -1;
+            dy = 0;
+        }
+        if (keyPressed === UP_KEY && !goingDown) {
+            dx = 0;
+            dy = -1;
+        }
+        if (keyPressed === RIGHT_KEY && !goingLeft) {
+            dx = 1;
+            dy = 0;
+        }
+        if (keyPressed === DOWN_KEY && !goingUp) {
+            dx = 0;
+            dy = 1;
+        }
     }
 
     function gameLoop() {
-        if (!gameRunning) return;
-        update();
-        draw();
-        animationFrameId = requestAnimationFrame(gameLoop);
+        if (didGameEnd()) {
+            gameInfo.textContent = `Snake Game: Game Over! Score: ${score}`;
+            stopGame();
+            return;
+        }
+
+        changingDirection = false;
+        setTimeout(function() {
+            advanceSnake();
+            draw();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }, 100);
     }
 
     function startGame() {
         if (!gameRunning) {
+            // Reset game state
+            snake = [{ x: 10, y: 10 }];
+            dx = 0;
+            dy = 0;
+            score = 0;
+            generateFood();
+
             gameRunning = true;
             gameInfo.textContent = "Snake Game: Starting...";
             gameLoop();
@@ -37,10 +135,8 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
         }
-        gameInfo.textContent = "Snake Game: Game stopped.";
     }
 
-    // Expose functions to the global scope for project_detail.html to call
     return {
         startGame: startGame,
         stopGame: stopGame
