@@ -14,10 +14,10 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
     const ballRadius = 10;
     let x = canvas.width / 2;
     let y = canvas.height - 30;
-    let dx = 2;
-    let dy = -2;
+    let dx = 2; // Default ball speed
+    let dy = -2; // Default ball speed
 
-    const brickRowCount = 3;
+    let brickRowCount = 3; // Default brick rows
     const brickColumnCount = 5;
     const brickWidth = 75;
     const brickHeight = 20;
@@ -25,12 +25,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
     const brickOffsetTop = 30;
     const brickOffsetLeft = 30;
     let bricks = [];
-    for (let c = 0; c < brickColumnCount; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < brickRowCount; r++) {
-            bricks[c][r] = { x: 0, y: 0, status: 1 };
-        }
-    }
 
     // Event listeners for paddle movement
     document.addEventListener("keydown", keyDownHandler, false);
@@ -122,8 +116,8 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
                 dy = -dy;
             } else {
                 // Game Over
-                gameInfo.textContent = "Brick Breaker: Game Over!";
                 stopGame();
+                window.showGameOver("Game Over!", ""); // Call global showGameOver
                 return;
             }
         }
@@ -147,25 +141,32 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
             if (!allBricksBroken) break;
         }
         if (allBricksBroken) {
-            gameInfo.textContent = "Brick Breaker: You Win!";
             stopGame();
+            window.showGameOver("You Win!", ""); // Call global showGameOver
             return;
         }
 
         animationFrameId = requestAnimationFrame(draw);
     }
 
-    function startGame() {
+    function startGame(settings = {}) {
         if (!gameRunning) {
+            // Apply settings
+            dx = settings.ballSpeed || 2;
+            dy = -(settings.ballSpeed || 2); // Ball starts moving up
+            brickRowCount = settings.brickRows || 3;
+
             // Reset game state
             paddleX = (canvas.width - paddleWidth) / 2;
             x = canvas.width / 2;
             y = canvas.height - 30;
-            dx = 2;
-            dy = -2;
+            
+            // Reinitialize bricks based on new row count
+            bricks = [];
             for (let c = 0; c < brickColumnCount; c++) {
+                bricks[c] = [];
                 for (let r = 0; r < brickRowCount; r++) {
-                    bricks[c][r].status = 1;
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
                 }
             }
 

@@ -3,13 +3,14 @@
 window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameRunning = false;
     let animationFrameId = null;
-    const gridSize = 20;
+    let gridSize = 20; // Default grid size
     let snake = [{ x: 10, y: 10 }];
     let food = {};
     let dx = 0;
     let dy = 0;
     let score = 0;
     let changingDirection = false;
+    let gameSpeed = 100; // Default game speed in ms
 
     // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
@@ -101,8 +102,8 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
 
     function gameLoop() {
         if (didGameEnd()) {
-            gameInfo.textContent = `Snake Game: Game Over! Score: ${score}`;
             stopGame();
+            window.showGameOver("Game Over!", `Score: ${score}`); // Call global showGameOver
             return;
         }
 
@@ -111,11 +112,15 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
             advanceSnake();
             draw();
             animationFrameId = requestAnimationFrame(gameLoop);
-        }, 100);
+        }, gameSpeed);
     }
 
-    function startGame() {
+    function startGame(settings = {}) {
         if (!gameRunning) {
+            // Apply settings
+            gameSpeed = settings.snakeSpeed || 100;
+            gridSize = settings.gridSize || 20;
+
             // Reset game state
             snake = [{ x: 10, y: 10 }];
             dx = 0;

@@ -8,12 +8,51 @@
 <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">{{ project.description }}</p>
 
 <div class="card p-6 mb-8">
-    <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner">
+    <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner relative">
         <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
+        
+        <!-- Game Over Overlay -->
+        <div id="gameOverOverlay" class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white text-center hidden">
+            <h2 class="text-5xl font-bold mb-4" id="gameOverTitle">Game Over!</h2>
+            <p class="text-2xl mb-6" id="gameOverScore"></p>
+            <button id="restartGameBtn" class="btn-primary text-xl py-3 px-6">Restart Game</button>
+        </div>
     </div>
     <div class="text-center mt-6">
         <button id="start-game-btn" class="btn-primary text-lg py-3 px-6">Start Game</button>
         <div id="game-info" class="mt-4 text-gray-600 dark:text-gray-400 text-lg font-medium"></div>
+        
+        <div id="game-settings" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner text-left">
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Game Settings:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% if project_id == 'brick_breaker' %}
+                <div>
+                    <label for="ballSpeed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ball Speed:</label>
+                    <input type="range" id="ballSpeed" min="1" max="5" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="ballSpeedValue" class="text-sm text-gray-600 dark:text-gray-400">2</span>
+                </div>
+                <div>
+                    <label for="brickRows" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Brick Rows:</label>
+                    <input type="range" id="brickRows" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickRowsValue" class="text-sm text-gray-600 dark:text-gray-400">3</span>
+                </div>
+                {% elif project_id == 'snake_game' %}
+                <div>
+                    <label for="snakeSpeed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Snake Speed (ms):</label>
+                    <input type="range" id="snakeSpeed" min="50" max="300" value="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="snakeSpeedValue" class="text-sm text-gray-600 dark:text-gray-400">100</span>
+                </div>
+                <div>
+                    <label for="gridSize" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Grid Size (px):</label>
+                    <input type="range" id="gridSize" min="10" max="30" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="gridSizeValue" class="text-sm text-gray-600 dark:text-gray-400">20</span>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">No specific settings for this art piece.</p>
+                {% endif %}
+            </div>
+        </div>
+
         <div id="game-controls" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
             <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Controls:</h3>
             <ul class="list-disc list-inside text-left mx-auto max-w-md text-gray-700 dark:text-gray-300">
@@ -34,10 +73,30 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startGameBtn = document.getElementById('start-game-btn');
+        const restartGameBtn = document.getElementById('restartGameBtn');
         const gameInfo = document.getElementById('game-info');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const gameOverTitle = document.getElementById('gameOverTitle');
+        const gameOverScore = document.getElementById('gameOverScore');
         const projectId = "{{ project_id }}";
 
         let gameModule = null;
+
+        // Hyperparameter elements
+        const ballSpeedInput = document.getElementById('ballSpeed');
+        const ballSpeedValueSpan = document.getElementById('ballSpeedValue');
+        const brickRowsInput = document.getElementById('brickRows');
+        const brickRowsValueSpan = document.getElementById('brickRowsValue');
+        const snakeSpeedInput = document.getElementById('snakeSpeed');
+        const snakeSpeedValueSpan = document.getElementById('snakeSpeedValue');
+        const gridSizeInput = document.getElementById('gridSize');
+        const gridSizeValueSpan = document.getElementById('gridSizeValue');
+
+        // Update span values on slider change
+        if (ballSpeedInput) ballSpeedInput.oninput = () => ballSpeedValueSpan.textContent = ballSpeedInput.value;
+        if (brickRowsInput) brickRowsInput.oninput = () => brickRowsValueSpan.textContent = brickRowsInput.value;
+        if (snakeSpeedInput) snakeSpeedInput.oninput = () => snakeSpeedValueSpan.textContent = snakeSpeedInput.value;
+        if (gridSizeInput) gridSizeInput.oninput = () => gridSizeValueSpan.textContent = gridSizeInput.value;
 
         // Prevent scrolling with arrow keys when canvas is focused
         canvas.addEventListener('keydown', function(e) {
@@ -45,6 +104,19 @@
                 e.preventDefault();
             }
         });
+
+        // Function to show game over screen
+        window.showGameOver = function(title, score) {
+            gameOverTitle.textContent = title;
+            gameOverScore.textContent = score;
+            gameOverOverlay.classList.remove('hidden');
+            startGameBtn.disabled = false; // Re-enable start button
+        };
+
+        // Function to hide game over screen
+        window.hideGameOver = function() {
+            gameOverOverlay.classList.add('hidden');
+        };
 
         // Dynamically load game-specific JavaScript
         const script = document.createElement('script');
@@ -66,10 +138,39 @@
         document.body.appendChild(script);
 
         startGameBtn.addEventListener('click', () => {
+            hideGameOver(); // Hide game over screen if visible
+            const gameSettings = {};
+            if (projectId === 'brick_breaker') {
+                gameSettings.ballSpeed = parseInt(ballSpeedInput.value);
+                gameSettings.brickRows = parseInt(brickRowsInput.value);
+            } else if (projectId === 'snake_game') {
+                gameSettings.snakeSpeed = parseInt(snakeSpeedInput.value);
+                gameSettings.gridSize = parseInt(gridSizeInput.value);
+            }
+
             if (gameModule && typeof gameModule.startGame === 'function') {
-                gameModule.startGame();
+                gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;
                 canvas.focus(); // Focus canvas to capture key events
+            } else {
+                gameInfo.textContent = "Game not ready or start function missing.";
+            }
+        });
+
+        restartGameBtn.addEventListener('click', () => {
+            hideGameOver();
+            const gameSettings = {};
+            if (projectId === 'brick_breaker') {
+                gameSettings.ballSpeed = parseInt(ballSpeedInput.value);
+                gameSettings.brickRows = parseInt(brickRowsInput.value);
+            } else if (projectId === 'snake_game') {
+                gameSettings.snakeSpeed = parseInt(snakeSpeedInput.value);
+                gameSettings.gridSize = parseInt(gridSizeInput.value);
+            }
+            if (gameModule && typeof gameModule.startGame === 'function') {
+                gameModule.startGame(gameSettings);
+                startGameBtn.disabled = true;
+                canvas.focus();
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
