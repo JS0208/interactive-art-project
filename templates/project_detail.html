@@ -4,11 +4,11 @@
 
 {% block content %}
 <a href="/projects" class="text-blue-500 hover:underline mb-6 inline-block text-lg">&larr; Back to Projects</a>
-<h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">{{ project.name }}</h1>
-<p class="text-lg text-gray-700 dark:text-gray-300 mb-8">{{ project.description }}</p>
+<h1 class="text-4xl font-bold mb-4 text-[var(--color-text-primary)]">{{ project.name }}</h1>
+<p class="text-lg text-[var(--color-text-primary)] mb-8">{{ project.description }}</p>
 
 <div class="card p-6 mb-8">
-    <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner relative">
+    <div class="flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner">
         <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
         
         <!-- Game Over Overlay -->
@@ -20,42 +20,42 @@
     </div>
     <div class="text-center mt-6">
         <button id="start-game-btn" class="btn-primary text-lg py-3 px-6">Start Game</button>
-        <div id="game-info" class="mt-4 text-gray-600 dark:text-gray-400 text-lg font-medium"></div>
+        <div id="game-info" class="mt-4 text-[var(--color-text-primary)] text-lg font-medium"></div>
         
         <div id="game-settings" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner text-left">
-            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Game Settings:</h3>
+            <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Game Settings:</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% if project_id == 'brick_breaker' %}
                 <div>
-                    <label for="ballSpeed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ball Speed:</label>
+                    <label for="ballSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Speed:</label>
                     <input type="range" id="ballSpeed" min="1" max="5" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="ballSpeedValue" class="text-sm text-gray-600 dark:text-gray-400">2</span>
+                    <span id="ballSpeedValue" class="text-sm text-[var(--color-text-primary)]">2</span>
                 </div>
                 <div>
-                    <label for="brickRows" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Brick Rows:</label>
+                    <label for="brickRows" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Rows:</label>
                     <input type="range" id="brickRows" min="1" max="5" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickRowsValue" class="text-sm text-gray-600 dark:text-gray-400">3</span>
+                    <span id="brickRowsValue" class="text-sm text-[var(--color-text-primary)]">3</span>
                 </div>
                 {% elif project_id == 'snake_game' %}
                 <div>
-                    <label for="snakeSpeed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Snake Speed (ms):</label>
+                    <label for="snakeSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Snake Speed (ms):</label>
                     <input type="range" id="snakeSpeed" min="50" max="300" value="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="snakeSpeedValue" class="text-sm text-gray-600 dark:text-gray-400">100</span>
+                    <span id="snakeSpeedValue" class="text-sm text-[var(--color-text-primary)]">100</span>
                 </div>
                 <div>
-                    <label for="gridSize" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Grid Size (px):</label>
+                    <label for="gridSize" class="block text-sm font-medium text-[var(--color-text-primary)]">Grid Size (px):</label>
                     <input type="range" id="gridSize" min="10" max="30" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="gridSizeValue" class="text-sm text-gray-600 dark:text-gray-400">20</span>
+                    <span id="gridSizeValue" class="text-sm text-[var(--color-text-primary)]">20</span>
                 </div>
                 {% else %}
-                <p class="text-sm text-gray-500 dark:text-gray-400">No specific settings for this art piece.</p>
+                <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
                 {% endif %}
             </div>
         </div>
 
         <div id="game-controls" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
-            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Controls:</h3>
-            <ul class="list-disc list-inside text-left mx-auto max-w-md text-gray-700 dark:text-gray-300">
+            <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Controls:</h3>
+            <ul class="list-disc list-inside text-left mx-auto max-w-md text-[var(--color-text-primary)]">
                 {% if project_id == 'brick_breaker' %}
                 <li>Left/Right Arrow Keys: Move Paddle</li>
                 {% elif project_id == 'snake_game' %}
