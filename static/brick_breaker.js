@@ -19,16 +19,56 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
 
     let brickRowCount; // Will be set by settings
     let brickColumnCount; // Will be set by settings
-    const brickWidth = 75;
-    const brickHeight = 20;
-    const brickPadding = 10;
-    const brickOffsetTop = 30;
-    const brickOffsetLeft = 30;
+    let brickWidth;
+    let brickHeight;
+    let brickPadding;
+    let brickOffsetTop;
+    let brickOffsetLeft;
     let bricks = [];
 
     // Event listeners for paddle movement
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("touchstart", touchStartHandler, false);
+    document.addEventListener("touchmove", touchMoveHandler, false);
+    document.addEventListener("touchend", touchEndHandler, false);
+
+    let touchStartX = 0;
+    let touchCurrentX = 0;
+    let touchActive = false;
+
+    function touchStartHandler(e) {
+        if (e.target === canvas) {
+            e.preventDefault();
+            touchStartX = e.touches[0].clientX;
+            touchCurrentX = touchStartX;
+            touchActive = true;
+        }
+    }
+
+    function touchMoveHandler(e) {
+        if (e.target === canvas && touchActive) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - touchCurrentX;
+            paddleX += deltaX * (canvas.width / 600); // Scale movement with canvas size
+            touchCurrentX = touch.clientX;
+
+            // Keep paddle within bounds
+            if (paddleX < 0) {
+                paddleX = 0;
+            } else if (paddleX + paddleWidth > canvas.width) {
+                paddleX = canvas.width - paddleWidth;
+            }
+        }
+    }
+
+    function touchEndHandler(e) {
+        if (e.target === canvas) {
+            e.preventDefault();
+            touchActive = false;
+        }
+    }
 
     function keyDownHandler(e) {
         if (e.key === "Right" || e.key === "ArrowRight") {
@@ -153,17 +193,23 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
     function startGame(settings = {}) {
         if (!gameRunning) {
             // Apply settings
-            dx = settings.ballSpeed || 2;
-            dy = -(settings.ballSpeed || 2); // Ball starts moving up
-            ballRadius = settings.ballRadius || 10;
-            paddleWidth = settings.paddleWidth || 75;
+            const scaleFactor = canvas.width / 600; // Base canvas width is 600
+            dx = (settings.ballSpeed || 2) * scaleFactor;
+            dy = -(settings.ballSpeed || 2) * scaleFactor; // Ball starts moving up
+            ballRadius = (settings.ballRadius || 10) * scaleFactor;
+            paddleWidth = (settings.paddleWidth || 75) * scaleFactor;
             brickRowCount = settings.brickRows || 3;
             brickColumnCount = settings.brickCols || 5;
+            brickWidth = (settings.brickWidth || 75) * scaleFactor;
+            brickHeight = (settings.brickHeight || 20) * scaleFactor;
+            brickPadding = (settings.brickPadding || 10) * scaleFactor;
+            brickOffsetTop = (settings.brickOffsetTop || 30) * scaleFactor;
+            brickOffsetLeft = (settings.brickOffsetLeft || 30) * scaleFactor;
 
             // Reset game state
             paddleX = (canvas.width - paddleWidth) / 2;
             x = canvas.width / 2;
-            y = canvas.height - 30;
+            y = canvas.height - (30 * scaleFactor);
             
             // Reinitialize bricks based on new row/col count
             bricks = [];

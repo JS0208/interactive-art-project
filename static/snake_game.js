@@ -14,6 +14,64 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
 
     // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
+    document.addEventListener("touchstart", handleTouchStart, false);
+    document.addEventListener("touchmove", handleTouchMove, false);
+
+    let x1 = null;
+    let y1 = null;
+
+    function handleTouchStart(event) {
+        const firstTouch = event.touches[0];
+        x1 = firstTouch.clientX;
+        y1 = firstTouch.clientY;
+    }
+
+    function handleTouchMove(event) {
+        if (!x1 || !y1) {
+            return;
+        }
+
+        let x2 = event.touches[0].clientX;
+        let y2 = event.touches[0].clientY;
+
+        let xDiff = x2 - x1;
+        let yDiff = y2 - y1;
+
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            // Most significant movement is horizontal
+            if (xDiff > 0) {
+                // Right swipe
+                if (dx === 0) { // Only change if not already moving horizontally
+                    dx = 1;
+                    dy = 0;
+                }
+            } else {
+                // Left swipe
+                if (dx === 0) {
+                    dx = -1;
+                    dy = 0;
+                }
+            }
+        } else {
+            // Most significant movement is vertical
+            if (yDiff > 0) {
+                // Down swipe
+                if (dy === 0) {
+                    dx = 0;
+                    dy = 1;
+                }
+            } else {
+                // Up swipe
+                if (dy === 0) {
+                    dx = 0;
+                    dy = -1;
+                }
+            }
+        }
+        x1 = null;
+        y1 = null;
+        event.preventDefault(); // Prevent scrolling
+    }
 
     function generateFood() {
         food = {
@@ -121,7 +179,7 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
             gameSpeed = settings.snakeSpeed || 100;
             gridSize = settings.gridSize || 20;
             const initialLength = settings.initialLength || 3;
-            // foodSpawnRate is not directly used in game logic, but can be used for future features
+            const foodSpawnRate = settings.foodSpawnRate || 5; // Use this for future features
 
             // Reset game state
             snake = [];

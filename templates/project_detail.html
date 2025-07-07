@@ -8,8 +8,8 @@
 <p class="text-lg text-[var(--color-text-primary)] mb-8">{{ project.description }}</p>
 
 <div class="card p-6 mb-8">
-    <div class="relative flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner" style="width: 600px; height: 400px; margin: 0 auto;">
-        <canvas id="gameCanvas" width="600" height="400" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
+    <div class="relative flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner" style="max-width: 100%; height: auto;">
+        <canvas id="gameCanvas" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
         
         <!-- Game Over Overlay (now relative to its parent container) -->
         <div id="gameOverOverlay" class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white text-center hidden">
@@ -50,6 +50,31 @@
                     <label for="ballRadius" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Radius:</label>
                     <input type="range" id="ballRadius" min="5" max="15" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
                     <span id="ballRadiusValue" class="text-sm text-[var(--color-text-primary)]">10</span>
+                </div>
+                <div>
+                    <label for="brickWidth" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Width:</label>
+                    <input type="range" id="brickWidth" min="50" max="100" value="75" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickWidthValue" class="text-sm text-[var(--color-text-primary)]">75</span>
+                </div>
+                <div>
+                    <label for="brickHeight" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Height:</label>
+                    <input type="range" id="brickHeight" min="10" max="30" value="20" step="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickHeightValue" class="text-sm text-[var(--color-text-primary)]">20</span>
+                </div>
+                <div>
+                    <label for="brickPadding" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Padding:</label>
+                    <input type="range" id="brickPadding" min="5" max="20" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickPaddingValue" class="text-sm text-[var(--color-text-primary)]">10</span>
+                </div>
+                <div>
+                    <label for="brickOffsetTop" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Offset Top:</label>
+                    <input type="range" id="brickOffsetTop" min="10" max="50" value="30" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickOffsetTopValue" class="text-sm text-[var(--color-text-primary)]">30</span>
+                </div>
+                <div>
+                    <label for="brickOffsetLeft" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Offset Left:</label>
+                    <input type="range" id="brickOffsetLeft" min="10" max="50" value="30" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <span id="brickOffsetLeftValue" class="text-sm text-[var(--color-text-primary)]">30</span>
                 </div>
                 {% elif project_id == 'snake_game' %}
                 <div>
@@ -111,6 +136,18 @@
 
         let gameModule = null;
 
+        // Set canvas size dynamically based on parent container
+        function setCanvasSize() {
+            const parentDiv = canvas.parentElement;
+            canvas.width = parentDiv.clientWidth > 600 ? 600 : parentDiv.clientWidth;
+            canvas.height = parentDiv.clientHeight > 400 ? 400 : parentDiv.clientHeight;
+        }
+
+        // Initial canvas size setting
+        setCanvasSize();
+        // Update canvas size on window resize
+        window.addEventListener('resize', setCanvasSize);
+
         // Parameter elements and their default/min/max values
         const paramsConfig = {
             brick_breaker: {
@@ -118,7 +155,12 @@
                 brickRows: { element: document.getElementById('brickRows'), valueSpan: document.getElementById('brickRowsValue'), default: 3, min: 1, max: 7 },
                 brickCols: { element: document.getElementById('brickCols'), valueSpan: document.getElementById('brickColsValue'), default: 5, min: 3, max: 7 },
                 paddleWidth: { element: document.getElementById('paddleWidth'), valueSpan: document.getElementById('paddleWidthValue'), default: 75, min: 50, max: 150, step: 5 },
-                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 }
+                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 },
+                brickWidth: { element: document.getElementById('brickWidth'), valueSpan: document.getElementById('brickWidthValue'), default: 75, min: 50, max: 100, step: 5 },
+                brickHeight: { element: document.getElementById('brickHeight'), valueSpan: document.getElementById('brickHeightValue'), default: 20, min: 10, max: 30, step: 2 },
+                brickPadding: { element: document.getElementById('brickPadding'), valueSpan: document.getElementById('brickPaddingValue'), default: 10, min: 5, max: 20, step: 1 },
+                brickOffsetTop: { element: document.getElementById('brickOffsetTop'), valueSpan: document.getElementById('brickOffsetTopValue'), default: 30, min: 10, max: 50, step: 5 },
+                brickOffsetLeft: { element: document.getElementById('brickOffsetLeft'), valueSpan: document.getElementById('brickOffsetLeftValue'), default: 30, min: 10, max: 50, step: 5 }
             },
             snake_game: {
                 snakeSpeed: { element: document.getElementById('snakeSpeed'), valueSpan: document.getElementById('snakeSpeedValue'), default: 100, min: 30, max: 200, step: 10 },
