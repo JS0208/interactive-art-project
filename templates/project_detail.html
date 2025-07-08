@@ -22,7 +22,7 @@
         <button id="start-game-btn" class="btn-primary text-lg py-3 px-6">Start Game</button>
         <div id="game-info" class="mt-4 text-[var(--color-text-primary)] text-lg font-medium"></div>
         
-        <div id="game-settings" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner text-left">
+        <div id="game-settings" class="mt-5 p-4 rounded-lg shadow-inner text-left">
             <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Game Settings:</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% if project_id == 'brick_breaker' %}
@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <div id="game-controls" class="mt-5 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-inner">
+        <div id="game-controls" class="mt-5 p-4 rounded-lg shadow-inner">
             <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Controls:</h3>
             <ul class="list-disc list-inside text-left mx-auto max-w-md text-[var(--color-text-primary)]">
                 {% if project_id == 'brick_breaker' %}
@@ -304,6 +304,7 @@
                 gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;
                 canvas.focus(); // Focus canvas to capture key events
+                document.body.classList.add('overflow-hidden'); // Disable scrolling
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
@@ -317,10 +318,25 @@
                 gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;
                 canvas.focus();
+                document.body.classList.add('overflow-hidden'); // Disable scrolling
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
         });
-    });
-</script>
-{% endblock %}
+
+        // Function to show game over screen
+        window.showGameOver = function(title, score) {
+            gameOverTitle.textContent = title;
+            gameOverScore.textContent = score;
+            gameOverOverlay.classList.remove('hidden');
+            startGameBtn.disabled = false; // Re-enable start button
+            document.body.classList.remove('overflow-hidden'); // Enable scrolling
+
+            // Add event listener for 'r' key to restart game
+            document.addEventListener('keydown', function restartOnR(e) {
+                if (e.key === 'r' || e.key === 'R') {
+                    restartGameBtn.click();
+                    document.removeEventListener('keydown', restartOnR);
+                }
+            });
+        };
