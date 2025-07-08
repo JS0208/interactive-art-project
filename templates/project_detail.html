@@ -245,21 +245,6 @@
             }
         });
 
-        // Function to show game over screen
-        window.showGameOver = function(title, score) {
-            gameOverTitle.textContent = title;
-            gameOverScore.textContent = score;
-            gameOverOverlay.classList.remove('hidden');
-            startGameBtn.disabled = false; // Re-enable start button
-
-            // Add event listener for 'r' key to restart game
-            document.addEventListener('keydown', function restartOnR(e) {
-                if (e.key === 'r' || e.key === 'R') {
-                    restartGameBtn.click();
-                    document.removeEventListener('keydown', restartOnR);
-                }
-            });
-        };
 
         // Function to hide game over screen
         window.hideGameOver = function() {
@@ -342,3 +327,6 @@
                 }
             });
         };
+    });
+</script>
+{% endblock %}
