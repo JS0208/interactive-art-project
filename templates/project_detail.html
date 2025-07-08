@@ -139,8 +139,18 @@
         // Set canvas size dynamically based on parent container
         function setCanvasSize() {
             const parentDiv = canvas.parentElement;
-            canvas.width = parentDiv.clientWidth > 600 ? 600 : parentDiv.clientWidth;
-            canvas.height = parentDiv.clientHeight > 400 ? 400 : parentDiv.clientHeight;
+            const maxWidth = 600;
+            const maxHeight = 400;
+            const aspectRatio = maxWidth / maxHeight; // 3:2
+
+            let newWidth = parentDiv.clientWidth;
+            if (newWidth > maxWidth) {
+                newWidth = maxWidth;
+            }
+            let newHeight = newWidth / aspectRatio;
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
         }
 
         // Initial canvas size setting
@@ -238,6 +248,14 @@
             gameOverScore.textContent = score;
             gameOverOverlay.classList.remove('hidden');
             startGameBtn.disabled = false; // Re-enable start button
+
+            // Add event listener for 'r' key to restart game
+            document.addEventListener('keydown', function restartOnR(e) {
+                if (e.key === 'r' || e.key === 'R') {
+                    restartGameBtn.click();
+                    document.removeEventListener('keydown', restartOnR);
+                }
+            });
         };
 
         // Function to hide game over screen
