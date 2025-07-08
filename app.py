@@ -1,27 +1,19 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import io
 import sys
+import random
 
 app = Flask(__name__)
 
-# Dummy project data (replace with database in a real application)
+# Project data
 projects = {
-    'colorful_swirls': {
-        'name': 'Colorful Swirls',
-        'description': 'A generative art piece with swirling colors. Enter Python code to generate patterns.',
-        'code_example': """import random
-for _ in range(10):
-    print(f"Color: {random.choice(["red", "green", "blue"])}")"""
+    'brick_breaker': {
+        'name': 'Brick Breaker',
+        'description': 'A classic arcade game where you break bricks by bouncing a ball. Test your reflexes!',
     },
-    'particle_flow': {
-        'name': 'Particle Flow',
-        'description': 'Simulates particle movement based on mathematical functions. Try different equations!',
-        'code_example': """x = 0
-y = 0
-for i in range(5):
-    x += i
-    y -= i
-    print(f"Particle at ({x}, {y})")"""
+    'snake_game': {
+        'name': 'Snake Game',
+        'description': 'The timeless snake game. Guide your snake to eat food and grow, but avoid hitting walls or yourself!',
     }
 }
 
@@ -33,28 +25,21 @@ def index():
 def list_projects():
     return render_template('projects.html', projects=projects)
 
-@app.route('/projects/<project_id>', methods=['GET', 'POST'])
+@app.route('/projects/<project_id>')
 def project_detail(project_id):
     project = projects.get(project_id)
     if not project:
         return "Project not found", 404
-
-    output = None
-    if request.method == 'POST':
-        user_code = request.form['code']
-        try:
-            old_stdout = sys.stdout
-            redirected_output = io.StringIO()
-            sys.stdout = redirected_output
-
-            exec(user_code)
-
-            output = redirected_output.getvalue()
-            sys.stdout = old_stdout
-        except Exception as e:
-            output = f"Error: {e}"
     
-    return render_template('project_detail.html', project=project, output=output)
+    return render_template('project_detail.html', project=project, project_id=project_id)
+
+@app.route('/generate_art/<project_id>')
+def generate_art(project_id):
+    # This route is now primarily for games, or could be removed if no generative art remains
+    if project_id in ['brick_breaker', 'snake_game']:
+        return jsonify({'status': 'Game ready', 'project_id': project_id})
+    else:
+        return "Art project not found", 404
 
 if __name__ == '__main__':
     app.run(debug=True)

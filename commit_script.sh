@@ -1,0 +1,1 @@
+git commit -m "feat: Add detailed parameters and mobile support for games"

@@ -1,35 +1,277 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="theme-modern-clarity">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Interactive Art{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @layer base {
+            /* Theme Definitions */
+
+            /* 1. Modern Clarity */
+            .theme-modern-clarity {
+                --color-bg-primary: #F8F9FA;
+                --color-text-primary: #212529;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #DEE2E6;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #495057;
+                --color-nav-hover-text: #0D6EFD;
+                --color-btn-primary-bg: #0D6EFD;
+                --color-btn-primary-hover-bg: #0B5ED7;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #6C757D;
+                --color-btn-secondary-hover-bg: #5C636A;
+                --color-btn-secondary-text: #FFFFFF;
+            }
+
+            /* 2. Midnight Focus */
+            .theme-midnight-focus {
+                --color-bg-primary: #121212;
+                --color-text-primary: #E0E0E0;
+                --color-card-bg: #1E1E1E;
+                --color-card-shadow: #2C2C2C;
+                --color-nav-bg: #1E1E1E;
+                --color-nav-text: #E0E0E0;
+                --color-nav-hover-text: #26A69A;
+                --color-btn-primary-bg: #26A69A;
+                --color-btn-primary-hover-bg: #00897B;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #333333;
+                --color-btn-secondary-hover-bg: #424242;
+                --color-btn-secondary-text: #E0E0E0;
+            }
+
+            /* 3. Serene Forest */
+            .theme-serene-forest {
+                --color-bg-primary: #F5F5DC;
+                --color-text-primary: #3D403A;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #D2D2C0;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #5A6D55;
+                --color-nav-hover-text: #4CAF50;
+                --color-btn-primary-bg: #4CAF50;
+                --color-btn-primary-hover-bg: #45A049;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #A9A9A9;
+                --color-btn-secondary-hover-bg: #8B8B8B;
+                --color-btn-secondary-text: #FFFFFF;
+            }
+
+            /* 4. Sunset Horizon */
+            .theme-sunset-horizon {
+                --color-bg-primary: #2C3E50;
+                --color-text-primary: #ECF0F1;
+                --color-card-bg: #34495E;
+                --color-card-shadow: #46627F;
+                --color-nav-bg: #34495E;
+                --color-nav-text: #ECF0F1;
+                --color-nav-hover-text: #E67E22;
+                --color-btn-primary-bg: #E67E22;
+                --color-btn-primary-hover-bg: #D35400;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #95A5A6;
+                --color-btn-secondary-hover-bg: #7F8C8D;
+                --color-btn-secondary-text: #2C3E50;
+            }
+
+            /* 5. Vintage Paper */
+            .theme-vintage-paper {
+                --color-bg-primary: #FDF6E3;
+                --color-text-primary: #584B3A;
+                --color-card-bg: #FBFBFB;
+                --color-card-shadow: #EAE3D4;
+                --color-nav-bg: #FBFBFB;
+                --color-nav-text: #657B83;
+                --color-nav-hover-text: #8B0000;
+                --color-btn-primary-bg: #8B0000;
+                --color-btn-primary-hover-bg: #A52A2A;
+                --color-btn-primary-text: #FDF6E3;
+                --color-btn-secondary-bg: #D2B48C;
+                --color-btn-secondary-hover-bg: #BC8F8F;
+                --color-btn-secondary-text: #584B3A;
+            }
+
+            /* 6. Lavender Dream */
+            .theme-lavender-dream {
+                --color-bg-primary: #E6E6FA;
+                --color-text-primary: #483D8B;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #D8BFD8;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #6A5ACD;
+                --color-nav-hover-text: #8A2BE2;
+                --color-btn-primary-bg: #9370DB;
+                --color-btn-primary-hover-bg: #8A2BE2;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #D8BFD8;
+                --color-btn-secondary-hover-bg: #BA55D3;
+                --color-btn-secondary-text: #483D8B;
+            }
+
+            /* 7. Corporate Blue */
+            .theme-corporate-blue {
+                --color-bg-primary: #EFF2F5;
+                --color-text-primary: #343A40;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #CED4DA;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #0056B3;
+                --color-nav-hover-text: #004085;
+                --color-btn-primary-bg: #007BFF;
+                --color-btn-primary-hover-bg: #0069D9;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #E9ECEF;
+                --color-btn-secondary-hover-bg: #DAE0E5;
+                --color-btn-secondary-text: #343A40;
+            }
+
+            /* 8. Cyber Tech */
+            .theme-cyber-tech {
+                --color-bg-primary: #0A0A1A;
+                --color-text-primary: #CED4DA;
+                --color-card-bg: #1A1A2A;
+                --color-card-shadow: #343A40;
+                --color-nav-bg: #1A1A2A;
+                --color-nav-text: #CED4DA;
+                --color-nav-hover-text: #FF00FF;
+                --color-btn-primary-bg: #FF00FF;
+                --color-btn-primary-hover-bg: #CC00CC;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #343A40;
+                --color-btn-secondary-hover-bg: #495057;
+                --color-btn-secondary-text: #CED4DA;
+            }
+
+            /* Apply variables */
+            body {
+                background-color: var(--color-bg-primary);
+                color: var(--color-text-primary);
+            }
+            .card {
+                background-color: var(--color-card-bg);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* default shadow */
+                border-color: var(--color-card-shadow); /* use shadow color for border */
+            }
+            .navbar {
+                background-color: var(--color-nav-bg);
+            }
+            .nav-link {
+                color: var(--color-nav-text);
+            }
+            .nav-link:hover {
+                color: var(--color-nav-hover-text);
+            }
+            .btn-primary {
+                background-color: var(--color-btn-primary-bg);
+                color: var(--color-btn-primary-text);
+            }
+            .btn-primary:hover {
+                background-color: var(--color-btn-primary-hover-bg);
+            }
+            .btn-secondary {
+                background-color: var(--color-btn-secondary-bg);
+                color: var(--color-btn-secondary-text);
+            }
+            .btn-secondary:hover {
+                background-color: var(--color-btn-secondary-hover-bg);
+            }
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Interactive Art</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/projects">Projects</a>
-                    </li>
-                </ul>
+<body class="bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans leading-normal tracking-normal">
+    <nav class="navbar p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a class="text-white text-3xl font-extrabold tracking-tight" href="/">Interactive Art</a>
+            <div class="flex items-center space-x-6">
+                <a class="nav-link text-lg transition-colors duration-200" href="/">Home</a>
+                <a class="nav-link text-lg transition-colors duration-200" href="/projects">Projects</a>
+                <div class="relative inline-block text-left">
+                    <button id="theme-dropdown-button" type="button" class="nav-link text-lg focus:outline-none flex items-center" aria-expanded="true" aria-haspopup="true">
+                        Theme
+                        <svg class="-mr-1 ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.042-8.67l-.707-.707M10.95 18.67l-.707.707m8.67-8.042l.707-.707M18.67 10.95l.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
+                    </button>
+                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
+                        <div class="py-1" role="none">
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-modern-clarity">Modern Clarity</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-midnight-focus">Midnight Focus</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-serene-forest">Serene Forest</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-sunset-horizon">Sunset Horizon</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-vintage-paper">Vintage Paper</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-lavender-dream">Lavender Dream</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-corporate-blue">Corporate Blue</button>
+                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-cyber-tech">Cyber Tech</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <div class="container mx-auto mt-10 p-4">
         {% block content %}{% endblock %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        const htmlElement = document.documentElement;
+        const themeDropdownButton = document.getElementById('theme-dropdown-button');
+        const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+
+        // Theme mapping for easy access
+        const themes = [
+            'theme-modern-clarity',
+            'theme-midnight-focus',
+            'theme-serene-forest',
+            'theme-sunset-horizon',
+            'theme-vintage-paper',
+            'theme-lavender-dream',
+            'theme-corporate-blue',
+            'theme-cyber-tech'
+        ];
+
+        // Function to apply theme
+        function applyTheme(themeName) {
+            themes.forEach(theme => {
+                htmlElement.classList.remove(theme);
+            });
+            htmlElement.classList.add(themeName);
+            localStorage.setItem('theme', themeName);
+        }
+
+        // Initialize theme from localStorage or default to Modern Clarity
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme && themes.includes(savedTheme)) {
+            applyTheme(savedTheme);
+        } else {
+            applyTheme('theme-modern-clarity'); // Default theme
+        }
+
+        // Toggle dropdown visibility
+        themeDropdownButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from immediately closing dropdown
+            themeDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Hide dropdown when clicking outside
+        window.addEventListener('click', (event) => {
+            if (!themeDropdownButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
+                themeDropdownMenu.classList.add('hidden');
+            }
+        });
+
+        // Add event listeners for each theme button
+        themes.forEach(themeName => {
+            const button = document.getElementById(themeName);
+            if (button) {
+                button.addEventListener('click', () => {
+                    applyTheme(themeName);
+                    themeDropdownMenu.classList.add('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

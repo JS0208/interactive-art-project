@@ -1,0 +1,1 @@
+git commit -m "fix: Add robust parameter handling in project_detail.html"

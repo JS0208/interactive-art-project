@@ -1,0 +1,1 @@
+git commit -m "feat: Improve mobile experience and add restart text"
