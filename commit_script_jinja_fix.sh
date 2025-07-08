@@ -1,0 +1,1 @@
+git commit -m "fix: Add missing endblock tag in project_detail.html"

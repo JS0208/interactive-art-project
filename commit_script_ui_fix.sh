@@ -1,0 +1,1 @@
+git commit -m "fix: Improve UI visibility and conditional scrolling"
