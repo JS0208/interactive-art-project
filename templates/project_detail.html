@@ -261,11 +261,101 @@
             });
         };
     });
-</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const restartGameBtn = document.getElementById('restartGameBtn');
+        const gameInfo = document.getElementById('game-info');
+        const gameOverOverlay = document.getElementById('gameOverOverlay');
+        const gameOverTitle = document.getElementById('gameOverTitle');
+        const gameOverScore = document.getElementById('gameOverScore');
+        const projectId = "{{ project_id }}";
+
+        let gameModule = null;
+
+        // Set canvas size dynamically
+        function setCanvasSize() {
+            const parentDiv = canvas.parentElement;
+            const aspectRatio = 600 / 400; // Original 3:2 aspect ratio
+            let newWidth = parentDiv.clientWidth;
+            let newHeight = newWidth / aspectRatio;
+            if (newWidth > 600) {
+                newWidth = 600;
+                newHeight = 400;
+            }
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+        }
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+
+        // Parameter handling logic (paramsConfig, event listeners for sliders, etc.)
+        const paramsConfig = {
+            brick_breaker: {
+                ballSpeed: { element: document.getElementById('ballSpeed'), valueSpan: document.getElementById('ballSpeedValue'), default: 2, min: 1, max: 10 },
+                brickRows: { element: document.getElementById('brickRows'), valueSpan: document.getElementById('brickRowsValue'), default: 3, min: 1, max: 7 },
+                brickCols: { element: document.getElementById('brickCols'), valueSpan: document.getElementById('brickColsValue'), default: 5, min: 3, max: 7 },
+                paddleWidth: { element: document.getElementById('paddleWidth'), valueSpan: document.getElementById('paddleWidthValue'), default: 75, min: 50, max: 150, step: 5 },
+                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 },
+                brickWidth: { element: document.getElementById('brickWidth'), valueSpan: document.getElementById('brickWidthValue'), default: 75, min: 50, max: 100, step: 5 },
+                brickHeight: { element: document.getElementById('brickHeight'), valueSpan: document.getElementById('brickHeightValue'), default: 20, min: 10, max: 30, step: 2 },
+                brickPadding: { element: document.getElementById('brickPadding'), valueSpan: document.getElementById('brickPaddingValue'), default: 10, min: 5, max: 20, step: 1 },
+                brickOffsetTop: { element: document.getElementById('brickOffsetTop'), valueSpan: document.getElementById('brickOffsetTopValue'), default: 30, min: 10, max: 50, step: 5 },
+                brickOffsetLeft: { element: document.getElementById('brickOffsetLeft'), valueSpan: document.getElementById('brickOffsetLeftValue'), default: 30, min: 10, max: 50, step: 5 }
+            },
+            snake_game: {
+                snakeSpeed: { element: document.getElementById('snakeSpeed'), valueSpan: document.getElementById('snakeSpeedValue'), default: 100, min: 30, max: 200, step: 10 },
+                gridSize: { element: document.getElementById('gridSize'), valueSpan: document.getElementById('gridSizeValue'), default: 20, min: 10, max: 40, step: 5 },
+                initialLength: { element: document.getElementById('initialLength'), valueSpan: document.getElementById('initialLengthValue'), default: 3, min: 1, max: 10 },
+                foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
+            }
+        };
+        const currentParams = paramsConfig[projectId];
+        if (currentParams) {
+            for (const key in currentParams) {
+                const param = currentParams[key];
+                if (param.element) {
+                    param.element.oninput = () => { param.valueSpan.textContent = param.element.value; };
+                }
+            }
+        }
+        
+        const resetParamsBtn = document.getElementById('resetParamsBtn');
+        if (resetParamsBtn) {
+            resetParamsBtn.addEventListener('click', () => { /* ... reset logic ... */ });
+        }
+
+        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
+        if (randomizeParamsBtn) {
+            randomizeParamsBtn.addEventListener('click', () => { /* ... randomize logic ... */ });
+        }
+        
+        canvas.addEventListener('keydown', function(e) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
 
         // Function to hide game over screen
         window.hideGameOver = function() {
             gameOverOverlay.classList.add('hidden');
+        };
+
+        // Function to show game over screen
+        window.showGameOver = function(title, score) {
+            gameOverTitle.textContent = title;
+            gameOverScore.textContent = score;
+            gameOverOverlay.classList.remove('hidden');
+            startGameBtn.disabled = false;
+            document.body.classList.remove('overflow-hidden');
+            document.addEventListener('keydown', function restartOnR(e) {
+                if (e.key === 'r' || e.key === 'R') {
+                    restartGameBtn.click();
+                    document.removeEventListener('keydown', restartOnR);
+                }
+            });
         };
 
         // Dynamically load game-specific JavaScript
@@ -301,14 +391,13 @@
         }
 
         startGameBtn.addEventListener('click', () => {
-            hideGameOver(); // Hide game over screen if visible
+            hideGameOver();
             const gameSettings = getGameSettings();
-
             if (gameModule && typeof gameModule.startGame === 'function') {
                 gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;
-                canvas.focus(); // Focus canvas to capture key events
-                document.body.classList.add('overflow-hidden'); // Disable scrolling
+                canvas.focus();
+                document.body.classList.add('overflow-hidden');
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
@@ -317,33 +406,15 @@
         restartGameBtn.addEventListener('click', () => {
             hideGameOver();
             const gameSettings = getGameSettings();
-
             if (gameModule && typeof gameModule.startGame === 'function') {
                 gameModule.startGame(gameSettings);
                 startGameBtn.disabled = true;
                 canvas.focus();
-                document.body.classList.add('overflow-hidden'); // Disable scrolling
+                document.body.classList.add('overflow-hidden');
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
         });
-
-        // Function to show game over screen
-        window.showGameOver = function(title, score) {
-            gameOverTitle.textContent = title;
-            gameOverScore.textContent = score;
-            gameOverOverlay.classList.remove('hidden');
-            startGameBtn.disabled = false; // Re-enable start button
-            document.body.classList.remove('overflow-hidden'); // Enable scrolling
-
-            // Add event listener for 'r' key to restart game
-            document.addEventListener('keydown', function restartOnR(e) {
-                if (e.key === 'r' || e.key === 'R') {
-                    restartGameBtn.click();
-                    document.removeEventListener('keydown', restartOnR);
-                }
-            });
-        };
     });
 </script>
 {% endblock %}
