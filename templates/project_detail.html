@@ -124,6 +124,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // --- 기본 변수 및 요소 선택 ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startGameBtn = document.getElementById('start-game-btn');
@@ -132,34 +133,23 @@
         const gameOverOverlay = document.getElementById('gameOverOverlay');
         const gameOverTitle = document.getElementById('gameOverTitle');
         const gameOverScore = document.getElementById('gameOverScore');
+        const resetParamsBtn = document.getElementById('resetParamsBtn');
+        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
         const projectId = "{{ project_id }}";
-
         let gameModule = null;
 
-        // Set canvas size dynamically based on parent container
+        // --- 캔버스 크기 동적 조절 ---
         function setCanvasSize() {
             const parentDiv = canvas.parentElement;
-            const aspectRatio = 600 / 400; // Original 3:2 aspect ratio
-
-            let newWidth = parentDiv.clientWidth;
-            let newHeight = newWidth / aspectRatio;
-
-            // Ensure canvas doesn't exceed original max dimensions if parent is very large
-            if (newWidth > 600) {
-                newWidth = 600;
-                newHeight = 400;
-            }
-
+            const aspectRatio = 600 / 400;
+            let newWidth = parentDiv.clientWidth > 600 ? 600 : parentDiv.clientWidth;
             canvas.width = newWidth;
-            canvas.height = newHeight;
+            canvas.height = newWidth / aspectRatio;
         }
-
-        // Initial canvas size setting
         setCanvasSize();
-        // Update canvas size on window resize
         window.addEventListener('resize', setCanvasSize);
 
-        // Parameter elements and their default/min/max values
+        // --- 게임 설정(파라미터) 관리 ---
         const paramsConfig = {
             brick_breaker: {
                 ballSpeed: { element: document.getElementById('ballSpeed'), valueSpan: document.getElementById('ballSpeedValue'), default: 2, min: 1, max: 10 },
@@ -180,25 +170,18 @@
                 foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
             }
         };
-
         const currentParams = paramsConfig[projectId];
 
-        // Update span values on slider change
         if (currentParams) {
             for (const key in currentParams) {
                 const param = currentParams[key];
                 if (param.element) {
-                    param.element.oninput = () => {
-                        param.valueSpan.textContent = param.element.value;
-                    };
+                    param.element.oninput = () => { param.valueSpan.textContent = param.element.value; };
                 }
             }
-        } else {
-            console.warn(`No parameters configured for project: ${projectId}`);
         }
 
-        // Reset Parameters Button
-        const resetParamsBtn = document.getElementById('resetParamsBtn');
+        // --- 파라미터 버튼 이벤트 리스너 ---
         if (resetParamsBtn) {
             resetParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
@@ -212,9 +195,6 @@
                 }
             });
         }
-
-        // Randomize Parameters Button
-        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
         if (randomizeParamsBtn) {
             randomizeParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
@@ -222,14 +202,9 @@
                         const param = currentParams[key];
                         if (param.element) {
                             let randomValue;
-                            if (param.step) {
-                                // For stepped ranges
-                                const numSteps = (param.max - param.min) / param.step;
-                                randomValue = param.min + Math.round(Math.random() * numSteps) * param.step;
-                            } else {
-                                // For continuous ranges
-                                randomValue = Math.floor(Math.random() * (param.max - param.min + 1)) + param.min;
-                            }
+                            const step = param.step || 1;
+                            const numSteps = (param.max - param.min) / step;
+                            randomValue = param.min + Math.round(Math.random() * numSteps) * step;
                             param.element.value = randomValue;
                             param.valueSpan.textContent = randomValue;
                         }
@@ -238,112 +213,8 @@
             });
         }
 
-        // Prevent scrolling with arrow keys when canvas is focused
-        canvas.addEventListener('keydown', function(e) {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                e.preventDefault();
-            }
-        });
-
-        // Function to show game over screen
-        window.showGameOver = function(title, score) {
-            gameOverTitle.textContent = title;
-            gameOverScore.textContent = score;
-            gameOverOverlay.classList.remove('hidden');
-            startGameBtn.disabled = false; // Re-enable start button
-
-            // Add event listener for 'r' key to restart game
-            document.addEventListener('keydown', function restartOnR(e) {
-                if (e.key === 'r' || e.key === 'R') {
-                    restartGameBtn.click();
-                    document.removeEventListener('keydown', restartOnR);
-                }
-            });
-        };
-    });
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const startGameBtn = document.getElementById('start-game-btn');
-        const restartGameBtn = document.getElementById('restartGameBtn');
-        const gameInfo = document.getElementById('game-info');
-        const gameOverOverlay = document.getElementById('gameOverOverlay');
-        const gameOverTitle = document.getElementById('gameOverTitle');
-        const gameOverScore = document.getElementById('gameOverScore');
-        const projectId = "{{ project_id }}";
-
-        let gameModule = null;
-
-        // Set canvas size dynamically
-        function setCanvasSize() {
-            const parentDiv = canvas.parentElement;
-            const aspectRatio = 600 / 400; // Original 3:2 aspect ratio
-            let newWidth = parentDiv.clientWidth;
-            let newHeight = newWidth / aspectRatio;
-            if (newWidth > 600) {
-                newWidth = 600;
-                newHeight = 400;
-            }
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-        }
-        setCanvasSize();
-        window.addEventListener('resize', setCanvasSize);
-
-        // Parameter handling logic (paramsConfig, event listeners for sliders, etc.)
-        const paramsConfig = {
-            brick_breaker: {
-                ballSpeed: { element: document.getElementById('ballSpeed'), valueSpan: document.getElementById('ballSpeedValue'), default: 2, min: 1, max: 10 },
-                brickRows: { element: document.getElementById('brickRows'), valueSpan: document.getElementById('brickRowsValue'), default: 3, min: 1, max: 7 },
-                brickCols: { element: document.getElementById('brickCols'), valueSpan: document.getElementById('brickColsValue'), default: 5, min: 3, max: 7 },
-                paddleWidth: { element: document.getElementById('paddleWidth'), valueSpan: document.getElementById('paddleWidthValue'), default: 75, min: 50, max: 150, step: 5 },
-                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 },
-                brickWidth: { element: document.getElementById('brickWidth'), valueSpan: document.getElementById('brickWidthValue'), default: 75, min: 50, max: 100, step: 5 },
-                brickHeight: { element: document.getElementById('brickHeight'), valueSpan: document.getElementById('brickHeightValue'), default: 20, min: 10, max: 30, step: 2 },
-                brickPadding: { element: document.getElementById('brickPadding'), valueSpan: document.getElementById('brickPaddingValue'), default: 10, min: 5, max: 20, step: 1 },
-                brickOffsetTop: { element: document.getElementById('brickOffsetTop'), valueSpan: document.getElementById('brickOffsetTopValue'), default: 30, min: 10, max: 50, step: 5 },
-                brickOffsetLeft: { element: document.getElementById('brickOffsetLeft'), valueSpan: document.getElementById('brickOffsetLeftValue'), default: 30, min: 10, max: 50, step: 5 }
-            },
-            snake_game: {
-                snakeSpeed: { element: document.getElementById('snakeSpeed'), valueSpan: document.getElementById('snakeSpeedValue'), default: 100, min: 30, max: 200, step: 10 },
-                gridSize: { element: document.getElementById('gridSize'), valueSpan: document.getElementById('gridSizeValue'), default: 20, min: 10, max: 40, step: 5 },
-                initialLength: { element: document.getElementById('initialLength'), valueSpan: document.getElementById('initialLengthValue'), default: 3, min: 1, max: 10 },
-                foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
-            }
-        };
-        const currentParams = paramsConfig[projectId];
-        if (currentParams) {
-            for (const key in currentParams) {
-                const param = currentParams[key];
-                if (param.element) {
-                    param.element.oninput = () => { param.valueSpan.textContent = param.element.value; };
-                }
-            }
-        }
-        
-        const resetParamsBtn = document.getElementById('resetParamsBtn');
-        if (resetParamsBtn) {
-            resetParamsBtn.addEventListener('click', () => { /* ... reset logic ... */ });
-        }
-
-        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
-        if (randomizeParamsBtn) {
-            randomizeParamsBtn.addEventListener('click', () => { /* ... randomize logic ... */ });
-        }
-        
-        canvas.addEventListener('keydown', function(e) {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                e.preventDefault();
-            }
-        });
-
-        // Function to hide game over screen
-        window.hideGameOver = function() {
-            gameOverOverlay.classList.add('hidden');
-        };
-
-        // Function to show game over screen
+        // --- 게임 오버 화면 관리 ---
+        window.hideGameOver = function() { gameOverOverlay.classList.add('hidden'); };
         window.showGameOver = function(title, score) {
             gameOverTitle.textContent = title;
             gameOverScore.textContent = score;
@@ -358,7 +229,7 @@
             });
         };
 
-        // Dynamically load game-specific JavaScript
+        // --- 게임 스크립트 동적 로딩 ---
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = `/static/${projectId}.js`;
@@ -373,28 +244,25 @@
         };
         script.onerror = () => {
             gameInfo.textContent = `Error loading game script for ${projectId}.`;
-            console.error(`Error loading game script for ${projectId}.`);
         };
         document.body.appendChild(script);
 
+        // --- 게임 설정값 가져오기 ---
         function getGameSettings() {
             const settings = {};
             if (currentParams) {
                 for (const key in currentParams) {
-                    const param = currentParams[key];
-                    if (param.element) {
-                        settings[key] = parseInt(param.element.value);
-                    }
+                    settings[key] = parseInt(currentParams[key].element.value);
                 }
             }
             return settings;
         }
 
+        // --- 게임 시작/재시작 버튼 이벤트 리스너 ---
         startGameBtn.addEventListener('click', () => {
             hideGameOver();
-            const gameSettings = getGameSettings();
             if (gameModule && typeof gameModule.startGame === 'function') {
-                gameModule.startGame(gameSettings);
+                gameModule.startGame(getGameSettings());
                 startGameBtn.disabled = true;
                 canvas.focus();
                 document.body.classList.add('overflow-hidden');
@@ -405,14 +273,20 @@
 
         restartGameBtn.addEventListener('click', () => {
             hideGameOver();
-            const gameSettings = getGameSettings();
             if (gameModule && typeof gameModule.startGame === 'function') {
-                gameModule.startGame(gameSettings);
+                gameModule.startGame(getGameSettings());
                 startGameBtn.disabled = true;
                 canvas.focus();
                 document.body.classList.add('overflow-hidden');
             } else {
                 gameInfo.textContent = "Game not ready or start function missing.";
+            }
+        });
+        
+        // --- 캔버스 포커스 시 스크롤 방지 ---
+        canvas.addEventListener('keydown', function(e) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
             }
         });
     });
