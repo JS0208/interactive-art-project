@@ -170,22 +170,22 @@
                 foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
             }
         };
-        const currentParams = paramsConfig[projectId];
+        const currentParams = paramsConfig['{{ project_id }}'];
 
         if (currentParams) {
             for (const key in currentParams) {
-                const param = currentParams[key];
-                if (param.element) {
+                const param = currentParams?.[key];
+                if (param?.element) {
                     param.element.oninput = () => { param.valueSpan.textContent = param.element.value; };
                 }
             }
         }
-        
+
         function disableParameterInputs() {
             if (currentParams) {
                 for (const key in currentParams) {
-                    if (currentParams[key].element) {
-                        currentParams[key].element.disabled = true;
+                    if (currentParams?.[key]?.element) {
+                        currentParams?.[key].element.disabled = true;
                     }
                 }
                 if (resetParamsBtn) resetParamsBtn.disabled = true;
@@ -196,8 +196,8 @@
         function enableParameterInputs() {
             if (currentParams) {
                 for (const key in currentParams) {
-                    if (currentParams[key].element) {
-                        currentParams[key].element.disabled = false;
+                    if (currentParams?.[key]?.element) {
+                        currentParams?.[key].element.disabled = false;
                     }
                 }
                 if (resetParamsBtn) resetParamsBtn.disabled = false;
@@ -209,8 +209,8 @@
             resetParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
                     for (const key in currentParams) {
-                        const param = currentParams[key];
-                        if (param.element) {
+                        const param = currentParams?.[key];
+                        if (param?.element) {
                             param.element.value = param.default;
                             param.valueSpan.textContent = param.default;
                         }
@@ -222,8 +222,8 @@
             randomizeParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
                     for (const key in currentParams) {
-                        const param = currentParams[key];
-                        if (param.element) {
+                        const param = currentParams?.[key];
+                        if (param?.element) {
                             let randomValue;
                             const step = param.step || 1;
                             const numSteps = (param.max - param.min) / step;
@@ -244,23 +244,22 @@
             startGameBtn.disabled = false;
             document.body.classList.remove('overflow-hidden');
             enableParameterInputs();
-            // REMOVED: 'r' key listener from here
         };
 
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = `/static/${projectId}.js`;
         script.onload = () => {
-            if (typeof window[projectId + 'Game'] === 'function') {
-                gameModule = window[projectId + 'Game'](canvas, ctx, gameInfo);
-                gameInfo.textContent = `Ready to play ${projectId.replace(/_/g, ' ')}!`;
+            if (typeof window['{{ project_id }}' + 'Game'] === 'function') {
+                gameModule = window['{{ project_id }}' + 'Game'](canvas, ctx, gameInfo);
+                gameInfo.textContent = `Ready to play {{ project_id|replace('_', ' ') }}!`;
             } else {
-                gameInfo.textContent = `Error: Game module for ${projectId} not found.`;
-                console.error(`Game module for ${projectId} not found.`);
+                gameInfo.textContent = `Error: Game module for {{ project_id }} not found.`;
+                console.error(`Game module for {{ project_id }} not found.`);
             }
         };
         script.onerror = () => {
-            gameInfo.textContent = `Error loading game script for ${projectId}.`;
+            gameInfo.textContent = `Error loading game script for {{ project_id }}.`;
         };
         document.body.appendChild(script);
 
@@ -268,7 +267,7 @@
             const settings = {};
             if (currentParams) {
                 for (const key in currentParams) {
-                    settings[key] = parseInt(currentParams[key].element.value);
+                    settings?.[key] = parseInt(currentParams?.[key]?.element.value);
                 }
             }
             return settings;
@@ -286,15 +285,14 @@
                 gameInfo.textContent = "Game not ready or start function missing.";
             }
         }
-        
+
         startGameBtn.addEventListener('click', handleStartGame);
         restartGameBtn.addEventListener('click', handleStartGame);
-        
-        // NEW: Global restart key listener
+
+        // Global restart key listener
         document.addEventListener('keydown', (e) => {
-            // Do not trigger restart if user is typing in an input field, etc.
             if (e.target.tagName.toLowerCase() === 'input') return;
-            
+
             if (e.key.toLowerCase() === 'r') {
                 e.preventDefault();
                 if (gameModule && typeof gameModule.stopGame === 'function') {
@@ -302,8 +300,19 @@
                 }
                 restartGameBtn.click();
             }
+            // NEW: Global randomize and restart key listener
+            if (e.key.toLowerCase() === 't') {
+                e.preventDefault();
+                if (randomizeParamsBtn) {
+                    randomizeParamsBtn.click();
+                }
+                if (gameModule && typeof gameModule.stopGame === 'function') {
+                    gameModule.stopGame();
+                }
+                restartGameBtn.click();
+            }
         });
-        
+
         canvas.addEventListener('keydown', function(e) {
             if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
                 e.preventDefault();
