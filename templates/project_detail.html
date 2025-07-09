@@ -24,6 +24,10 @@
         
         <div id="game-settings" class="mt-5 p-4 rounded-lg shadow-inner text-left">
             <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Game Settings:</h3>
+             <div class="mt-6 flex justify-center space-x-4">
+                <button id="resetParamsBtn" class="btn-secondary px-6 py-3 text-base font-semibold">Reset Parameters</button>
+                <button id="randomizeParamsBtn" class="btn-primary px-6 py-3 text-base font-semibold">Randomize Parameters</button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% if project_id == 'brick_breaker' %}
                 <div>
@@ -100,10 +104,6 @@
                 {% else %}
                 <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
                 {% endif %}
-            </div>
-            <div class="mt-6 flex justify-center space-x-4">
-                <button id="resetParamsBtn" class="btn-secondary px-6 py-3 text-base font-semibold">Reset Parameters</button>
-                <button id="randomizeParamsBtn" class="btn-primary px-6 py-3 text-base font-semibold">Randomize Parameters</button>
             </div>
         </div>
 
