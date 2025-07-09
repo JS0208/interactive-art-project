@@ -56,12 +56,22 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         ball.dy = -gameSettings.ballSpeed;
     }
     
-    function updateGameInfo() {
+    // --- 그리기 함수들 ---
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#E0E0E0";
         const bricksLeft = bricks.flat().filter(b => b.status === 1).length;
-        gameInfo.textContent = `Lives: ${lives} | Bricks Left: ${bricksLeft}`;
+        ctx.fillText("Bricks Left: " + bricksLeft, canvas.width - 120, 20);
+
+        for (let i = 0; i < lives; i++) {
+            ctx.beginPath();
+            ctx.arc(15 + i * 25, 20, 8, 0, Math.PI*2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.closePath();
+        }
     }
 
-    // --- 그리기 함수들 ---
     function drawBall() {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -126,7 +136,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
                             x: b.x + b.width / 2, y: b.y + b.height / 2,
                             radius: gameSettings.particleSize, color: b.color, opacity: 1.0
                         });
-                        updateGameInfo();
                     }
                 }
             });
@@ -148,6 +157,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         drawBall();
         drawPaddle();
         drawParticles();
+        drawLives();
         collisionDetection();
 
         // 공 이동
@@ -172,7 +182,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
                 lives--;
                 if (lives > 0) {
                     resetBallAndPaddle();
-                    updateGameInfo();
                 } else {
                     stopGame();
                     globalScope.showGameOver("Game Over!", "You ran out of lives.");
@@ -229,7 +238,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
             }
         }
         
-        updateGameInfo();
         draw();
     }
 
