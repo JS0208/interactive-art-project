@@ -271,7 +271,11 @@
             const settings = {};
             if (currentParams) {
                 for (const key in currentParams) {
-                    settings?.[key] = parseInt(currentParams?.[key]?.element.value);
+                    const param = currentParams[key];
+                    if (param && param.element) {
+                        // parseInt에 기수를 10으로 명시하여 안정성을 높입니다.
+                        settings[key] = parseInt(param.element.value, 10);
+                    }
                 }
             }
             return settings;
