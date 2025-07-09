@@ -1,188 +1,163 @@
-window.brick_breakerGame = function(canvas, ctx, gameInfo) {
+window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
     let gameRunning = false;
     let animationFrameId = null;
+    let particles = [];
 
-    // --- 색상 및 파티클 변수 ---
-    const ballAndPaddleColor = '#E0E0E0';
-    let particles = []; // 벽돌 파괴 효과를 위한 파티클 배열
+    // --- 게임 변수 ---
+    let ball, paddle, bricks = [], gameSettings;
+    let rightPressed = false, leftPressed = false, spacePressed = false;
+    let lives;
 
-    /**
-     * 밝은 유채색을 HSL 색 공간을 사용하여 랜덤하게 생성합니다.
-     */
-    function generateRandomBrightColor() {
-        const hue = Math.floor(Math.random() * 360);
-        const saturation = 100;
-        const lightness = 70;
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    }
-
-    // Game variables
-    const paddleHeight = 10;
-    let paddleWidth;
-    let paddleX;
-    let rightPressed = false;
-    let leftPressed = false;
-
-    let ballRadius;
-    let x;
-    let y;
-    let dx;
-    let dy;
-
-    let brickRowCount;
-    let brickColumnCount;
-    let brickWidth;
-    let brickHeight;
-    let brickPadding;
-    let brickOffsetTop;
-    let brickOffsetLeft;
-    let bricks = [];
-
-    // Event listeners
+    // --- 이벤트 리스너 ---
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
-    document.addEventListener("touchstart", touchStartHandler, false);
-    document.addEventListener("touchmove", touchMoveHandler, false);
-    document.addEventListener("touchend", touchEndHandler, false);
+    canvas.addEventListener("touchstart", touchStartHandler, { passive: false });
+    canvas.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    canvas.addEventListener("touchend", touchEndHandler, { passive: false });
+    let touchStartX = 0, touchCurrentX = 0, touchActive = false;
 
-    let touchStartX = 0;
-    let touchCurrentX = 0;
-    let touchActive = false;
-
-    function touchStartHandler(e) {
-        if (e.target === canvas) {
-            e.preventDefault();
-            touchStartX = e.touches[0].clientX;
-            touchCurrentX = touchStartX;
-            touchActive = true;
-        }
+    function keyDownHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+        else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+        else if (e.key === " ") spacePressed = true;
     }
-
+    function keyUpHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+        else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+        else if (e.key === " ") spacePressed = false;
+    }
+    function touchStartHandler(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchCurrentX = touch.clientX;
+        touchActive = true;
+        if (ball.isSticky) launchBall();
+    }
     function touchMoveHandler(e) {
-        if (e.target === canvas && touchActive) {
+        if (touchActive) {
             e.preventDefault();
             const touch = e.touches[0];
             const deltaX = touch.clientX - touchCurrentX;
-            paddleX += deltaX * (canvas.width / 600);
+            paddle.x += deltaX;
             touchCurrentX = touch.clientX;
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+        }
+    }
+    function touchEndHandler(e) { e.preventDefault(); touchActive = false; }
+    
+    function generateRandomBrightColor() {
+        return `hsl(${Math.random() * 360}, 100%, 70%)`;
+    }
 
-            if (paddleX < 0) {
-                paddleX = 0;
-            } else if (paddleX + paddleWidth > canvas.width) {
-                paddleX = canvas.width - paddleWidth;
-            }
+    function resetBallAndPaddle() {
+        paddle.x = (canvas.width - paddle.width) / 2;
+        ball.x = paddle.x + paddle.width / 2;
+        ball.y = canvas.height - paddle.height - ball.radius;
+        ball.dx = (Math.random() - 0.5) * gameSettings.ballSpeed * 2;
+        ball.dy = -gameSettings.ballSpeed;
+        
+        if (gameSettings.stickyPaddle) {
+            ball.isSticky = true;
         }
     }
 
-    function touchEndHandler(e) {
-        if (e.target === canvas) {
-            e.preventDefault();
-            touchActive = false;
+    function launchBall() {
+        if (ball.isSticky) {
+            ball.isSticky = false;
+            // 발사 시 속도 초기화
+            const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+            const launchSpeed = gameSettings.ballSpeed > 0 ? gameSettings.ballSpeed : 2;
+            ball.dx = (Math.random() - 0.5) * launchSpeed;
+            ball.dy = -launchSpeed;
         }
     }
-
-    function keyDownHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
-            rightPressed = true;
-        } else if (e.key === "Left" || e.key === "ArrowLeft") {
-            leftPressed = true;
-        }
+    
+    function updateGameInfo() {
+        const bricksLeft = bricks.flat().filter(b => b.status === 1).length;
+        gameInfo.textContent = `Lives: ${lives} | Bricks Left: ${bricksLeft}`;
     }
 
-    function keyUpHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
-            rightPressed = false;
-        } else if (e.key === "Left" || e.key === "ArrowLeft") {
-            leftPressed = false;
-        }
-    }
-
+    // --- 그리기 함수들 ---
     function drawBall() {
         ctx.beginPath();
-        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = ballAndPaddleColor;
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ball.color;
         ctx.fill();
         ctx.closePath();
     }
 
     function drawPaddle() {
         ctx.beginPath();
-        ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = ballAndPaddleColor;
+        ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+        ctx.fillStyle = paddle.color;
         ctx.fill();
         ctx.closePath();
     }
 
     function drawBricks() {
-        for (let c = 0; c < brickColumnCount; c++) {
-            for (let r = 0; r < brickRowCount; r++) {
-                if (bricks[c][r].status === 1) {
-                    const brick = bricks[c][r];
+        bricks.forEach(column => {
+            column.forEach(brick => {
+                if (brick.status === 1) {
                     ctx.beginPath();
-                    ctx.rect(brick.x, brick.y, brickWidth, brickHeight);
+                    ctx.rect(brick.x, brick.y, brick.width, brick.height);
                     ctx.fillStyle = brick.color;
                     ctx.fill();
                     ctx.closePath();
                 }
-            }
-        }
+            });
+        });
     }
     
-    /**
-     * 파티클 효과를 그리고 업데이트합니다.
-     */
     function drawParticles() {
-        // 배열을 역순으로 순회하여 안전하게 요소를 제거합니다.
         for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
-
-            // 파티클 상태 업데이트 (반지름 증가, 투명도 감소)
-            p.radius += 0.8; // 퍼지는 속도
-            p.opacity -= 0.02; // 사라지는 속도
-
-            // 파티클 그리기
+            p.radius += 0.8;
+            p.opacity -= gameSettings.particleLifespan;
             if (p.opacity > 0) {
                 ctx.save();
                 ctx.globalAlpha = p.opacity;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.strokeStyle = p.color;
-                ctx.lineWidth = 2; // 얇은 띠
+                ctx.lineWidth = 2;
                 ctx.stroke();
                 ctx.restore();
-            }
-
-            // 수명이 다한 파티클 제거
-            if (p.opacity <= 0) {
+            } else {
                 particles.splice(i, 1);
             }
         }
     }
 
+    // --- 게임 로직 ---
     function collisionDetection() {
-        for (let c = 0; c < brickColumnCount; c++) {
-            for (let r = 0; r < brickRowCount; r++) {
-                const b = bricks[c][r];
+        let allBricksBroken = true;
+        bricks.forEach(column => {
+            column.forEach(b => {
                 if (b.status === 1) {
-                    if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
-                        dy = -dy;
+                    allBricksBroken = false;
+                    if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
+                        ball.dy = -ball.dy;
                         b.status = 0;
-
-                        // ✨ 벽돌이 부서질 때 파티클 생성
                         particles.push({
-                            x: b.x + brickWidth / 2, // 벽돌의 중앙 x
-                            y: b.y + brickHeight / 2, // 벽돌의 중앙 y
-                            radius: 10, // 초기 반지름
-                            color: b.color, // 벽돌의 색상
-                            opacity: 1.0 // 초기 투명도
+                            x: b.x + b.width / 2, y: b.y + b.height / 2,
+                            radius: gameSettings.particleSize, color: b.color, opacity: 1.0
                         });
+                        updateGameInfo();
                     }
                 }
-            }
+            });
+        });
+        if (allBricksBroken) {
+            stopGame();
+            globalScope.showGameOver("You Win!", `All bricks cleared!`);
         }
     }
-
+    
     function draw() {
+        if (!gameRunning) return;
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#141414';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -190,93 +165,99 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
         drawBricks();
         drawBall();
         drawPaddle();
-        drawParticles(); // 파티클 그리기 함수 호출
+        drawParticles();
         collisionDetection();
 
-        x += dx;
-        y += dy;
-
-        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-            dx = -dx;
+        // 공 이동
+        if (ball.isSticky) {
+            ball.x = paddle.x + paddle.width / 2;
+            if (spacePressed) launchBall();
+        } else {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
         }
-        if (y + dy < ballRadius) {
-            dy = -dy;
-        } else if (y + dy > canvas.height - ballRadius) {
-            if (x > paddleX && x < paddleX + paddleWidth) {
-                dy = -dy;
-            } else {
-                stopGame();
-                window.showGameOver("Game Over!", "");
-                return;
-            }
+        
+        // 벽 충돌
+        if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
+            ball.dx = -ball.dx;
         }
+        if (ball.y + ball.dy < ball.radius) {
+            ball.dy = -ball.dy;
+        } else if (ball.y > canvas.height - ball.radius - paddle.height) {
+            if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                ball.dy = -ball.dy;
+                // 공 가속도 적용
+                if (gameSettings.ballAcceleration > 0) {
+                    ball.dx *= (1 + gameSettings.ballAcceleration);
+                    ball.dy *= (1 + gameSettings.ballAcceleration);
+                }
+                // 끈끈이 패들 재적용
+                if (gameSettings.stickyPaddle) ball.isSticky = true;
 
-        if (rightPressed && paddleX < canvas.width - paddleWidth) {
-            paddleX += 7;
-        } else if (leftPressed && paddleX > 0) {
-            paddleX -= 7;
-        }
-
-        let allBricksBroken = true;
-        for (let c = 0; c < brickColumnCount; c++) {
-            for (let r = 0; r < brickRowCount; r++) {
-                if (bricks[c][r].status === 1) {
-                    allBricksBroken = false;
-                    break;
+            } else if (ball.y > canvas.height - ball.radius) {
+                lives--;
+                if (lives > 0) {
+                    resetBallAndPaddle();
+                    updateGameInfo();
+                } else {
+                    stopGame();
+                    globalScope.showGameOver("Game Over!", "You ran out of lives.");
+                    return;
                 }
             }
-            if (!allBricksBroken) break;
         }
-        if (allBricksBroken) {
-            gameInfo.textContent = "Brick Breaker: You Win!";
-            stopGame();
-            window.showGameOver("You Win!", "");
-            return;
-        }
+        
+        // 패들 이동
+        if (rightPressed && paddle.x < canvas.width - paddle.width) paddle.x += gameSettings.paddleSpeed;
+        if (leftPressed && paddle.x > 0) paddle.x -= gameSettings.paddleSpeed;
 
         animationFrameId = requestAnimationFrame(draw);
     }
 
-    function startGame(settings = {}) {
-        if (!gameRunning) {
-            const scaleFactor = canvas.width / 600;
-            dx = (settings.ballSpeed || 2) * scaleFactor;
-            dy = -(settings.ballSpeed || 2) * scaleFactor;
-            ballRadius = (settings.ballRadius || 10) * scaleFactor;
-            paddleWidth = (settings.paddleWidth || 75) * scaleFactor;
-            brickRowCount = settings.brickRows || 3;
-            brickColumnCount = settings.brickCols || 5;
-            brickWidth = (settings.brickWidth || 75) * scaleFactor;
-            brickHeight = (settings.brickHeight || 20) * scaleFactor;
-            brickPadding = (settings.brickPadding || 10) * scaleFactor;
-            brickOffsetTop = (settings.brickOffsetTop || 30) * scaleFactor;
-            brickOffsetLeft = (settings.brickOffsetLeft || 30) * scaleFactor;
+    function startGame(settings) {
+        if (gameRunning) return;
+        gameRunning = true;
+        gameSettings = settings;
 
-            paddleX = (canvas.width - paddleWidth) / 2;
-            x = canvas.width / 2;
-            y = canvas.height - (30 * scaleFactor);
-            
-            particles = []; // 새 게임 시작 시 파티클 배열 초기화
+        const scaleFactor = canvas.width / 600;
+        
+        ball = {
+            radius: gameSettings.ballRadius * scaleFactor,
+            color: gameSettings.ballColor,
+            isSticky: false
+        };
+        paddle = {
+            height: 10 * scaleFactor,
+            width: gameSettings.paddleWidth * scaleFactor,
+            y: canvas.height - (10 * scaleFactor),
+            color: gameSettings.paddleColor
+        };
+        lives = gameSettings.lives;
+        
+        resetBallAndPaddle();
+        
+        particles = [];
+        bricks = [];
+        const brickWidth = gameSettings.brickWidth * scaleFactor;
+        const brickHeight = gameSettings.brickHeight * scaleFactor;
+        const brickPadding = 10 * scaleFactor;
+        const offsetLeft = (canvas.width - (gameSettings.brickCols * (brickWidth + brickPadding) - brickPadding)) / 2;
+        const offsetTop = 30 * scaleFactor;
 
-            bricks = [];
-            for (let c = 0; c < brickColumnCount; c++) {
-                bricks[c] = [];
-                for (let r = 0; r < brickRowCount; r++) {
-                    const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
-                    const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-                    bricks[c][r] = {
-                        x: brickX,
-                        y: brickY,
-                        status: 1,
-                        color: generateRandomBrightColor()
-                    };
-                }
+        for (let c = 0; c < gameSettings.brickCols; c++) {
+            bricks[c] = [];
+            for (let r = 0; r < gameSettings.brickRows; r++) {
+                bricks[c][r] = {
+                    x: (c * (brickWidth + brickPadding)) + offsetLeft,
+                    y: (r * (brickHeight + brickPadding)) + offsetTop,
+                    width: brickWidth, height: brickHeight, status: 1,
+                    color: generateRandomBrightColor()
+                };
             }
-
-            gameRunning = true;
-            gameInfo.textContent = "Brick Breaker: Starting...";
-            draw();
         }
+        
+        updateGameInfo();
+        draw();
     }
 
     function stopGame() {
@@ -287,8 +268,5 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo) {
         }
     }
 
-    return {
-        startGame: startGame,
-        stopGame: stopGame
-    };
+    return { startGame, stopGame };
 };
