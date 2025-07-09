@@ -17,10 +17,6 @@
             <p class="text-2xl mb-6" id="gameOverScore"></p>
             <button id="restartGameBtn" class="btn-primary text-xl py-3 px-6">Restart Game<br><span class="text-sm">(r) to restart</span></button>
         </div>
-        <div class="text-center mt-4 text-gray-500">
-            (r) to restart<br>
-            (t) to randomize and restart
-        </div>
     </div>
     <div class="text-center mt-6">
         <button id="start-game-btn" class="btn-primary text-lg py-3 px-6">Start Game</button>
@@ -32,7 +28,7 @@
                 <button id="resetParamsBtn" class="btn-secondary px-6 py-3 text-base font-semibold">Reset Parameters</button>
                 <button id="randomizeParamsBtn" class="btn-primary px-6 py-3 text-base font-semibold">Randomize Parameters</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {% if project_id == 'brick_breaker' %}
                 <div>
                     <label for="ballSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Speed:</label>
@@ -109,15 +105,18 @@
                 <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
                 {% endif %}
             </div>
+             <div class="text-center mt-4 text-gray-500">
+                (t) to randomize and restart
+            </div>
         </div>
 
         <div id="game-controls" class="mt-5 p-4 rounded-lg shadow-inner">
             <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Controls:</h3>
             <ul class="list-disc list-inside text-left mx-auto max-w-md text-[var(--color-text-primary)]">
                 {% if project_id == 'brick_breaker' %}
-                <li>Left/Right Arrow Keys: Move Paddle</li>
+                <li>Left/Right Arrow Keys or Touch: Move Paddle</li>
                 {% elif project_id == 'snake_game' %}
-                <li>Arrow Keys: Change Snake Direction</li>
+                <li>Arrow Keys or Swipe: Change Snake Direction</li>
                 {% else %}
                 <li>No specific controls for this art piece.</li>
                 {% endif %}
@@ -174,13 +173,15 @@
                 foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
             }
         };
-        const currentParams = paramsConfig['{{ project_id }}'];
+        const currentParams = paramsConfig[projectId];
 
         if (currentParams) {
             for (const key in currentParams) {
-                const param = currentParams?.[key];
-                if (param?.element) {
-                    param.element.oninput = () => { param.valueSpan.textContent = param.element.value; };
+                const param = currentParams[key];
+                if (param && param.element) {
+                    param.element.oninput = () => { 
+                        if(param.valueSpan) param.valueSpan.textContent = param.element.value; 
+                    };
                 }
             }
         }
@@ -188,8 +189,8 @@
         function disableParameterInputs() {
             if (currentParams) {
                 for (const key in currentParams) {
-                    if (currentParams?.[key]?.element) {
-                        currentParams?.[key].element.disabled = true;
+                    if (currentParams[key] && currentParams[key].element) {
+                        currentParams[key].element.disabled = true;
                     }
                 }
                 if (resetParamsBtn) resetParamsBtn.disabled = true;
@@ -200,8 +201,8 @@
         function enableParameterInputs() {
             if (currentParams) {
                 for (const key in currentParams) {
-                    if (currentParams?.[key]?.element) {
-                        currentParams?.[key].element.disabled = false;
+                    if (currentParams[key] && currentParams[key].element) {
+                        currentParams[key].element.disabled = false;
                     }
                 }
                 if (resetParamsBtn) resetParamsBtn.disabled = false;
@@ -213,10 +214,10 @@
             resetParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
                     for (const key in currentParams) {
-                        const param = currentParams?.[key];
-                        if (param?.element) {
+                        const param = currentParams[key];
+                        if (param && param.element) {
                             param.element.value = param.default;
-                            param.valueSpan.textContent = param.default;
+                            if(param.valueSpan) param.valueSpan.textContent = param.default;
                         }
                     }
                 }
@@ -226,14 +227,14 @@
             randomizeParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
                     for (const key in currentParams) {
-                        const param = currentParams?.[key];
-                        if (param?.element) {
+                        const param = currentParams[key];
+                        if (param && param.element) {
                             let randomValue;
                             const step = param.step || 1;
                             const numSteps = (param.max - param.min) / step;
                             randomValue = param.min + Math.round(Math.random() * numSteps) * step;
                             param.element.value = randomValue;
-                            param.valueSpan.textContent = randomValue;
+                            if(param.valueSpan) param.valueSpan.textContent = randomValue;
                         }
                     }
                 }
@@ -254,16 +255,17 @@
         script.type = 'text/javascript';
         script.src = `/static/${projectId}.js`;
         script.onload = () => {
-            if (typeof window['{{ project_id }}' + 'Game'] === 'function') {
-                gameModule = window['{{ project_id }}' + 'Game'](canvas, ctx, gameInfo);
-                gameInfo.textContent = `Ready to play {{ project_id|replace('_', ' ') }}!`;
+            const gameFunctionName = `${projectId}Game`;
+            if (typeof window[gameFunctionName] === 'function') {
+                gameModule = window[gameFunctionName](canvas, ctx, gameInfo);
+                gameInfo.textContent = `Ready to play ${projectId.replace(/_/g, ' ')}!`;
             } else {
-                gameInfo.textContent = `Error: Game module for {{ project_id }} not found.`;
-                console.error(`Game module for {{ project_id }} not found.`);
+                gameInfo.textContent = `Error: Game module for ${projectId} not found.`;
+                console.error(`Game module for ${projectId} not found.`);
             }
         };
         script.onerror = () => {
-            gameInfo.textContent = `Error loading game script for {{ project_id }}.`;
+            gameInfo.textContent = `Error loading game script for ${projectId}.`;
         };
         document.body.appendChild(script);
 
@@ -273,7 +275,6 @@
                 for (const key in currentParams) {
                     const param = currentParams[key];
                     if (param && param.element) {
-                        // parseInt에 기수를 10으로 명시하여 안정성을 높입니다.
                         settings[key] = parseInt(param.element.value, 10);
                     }
                 }
