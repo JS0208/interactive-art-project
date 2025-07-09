@@ -181,7 +181,6 @@
             }
         }
         
-        // --- NEW: 파라미터 입력 활성화/비활성화 함수 ---
         function disableParameterInputs() {
             if (currentParams) {
                 for (const key in currentParams) {
@@ -206,7 +205,6 @@
             }
         }
 
-        // --- 파라미터 버튼 이벤트 리스너 ---
         if (resetParamsBtn) {
             resetParamsBtn.addEventListener('click', () => {
                 if (currentParams) {
@@ -238,7 +236,6 @@
             });
         }
 
-        // --- 게임 오버 화면 관리 ---
         window.hideGameOver = function() { gameOverOverlay.classList.add('hidden'); };
         window.showGameOver = function(title, score) {
             gameOverTitle.textContent = title;
@@ -246,16 +243,10 @@
             gameOverOverlay.classList.remove('hidden');
             startGameBtn.disabled = false;
             document.body.classList.remove('overflow-hidden');
-            enableParameterInputs(); // MODIFIED: 파라미터 활성화
-            document.addEventListener('keydown', function restartOnR(e) {
-                if (e.key === 'r' || e.key === 'R') {
-                    restartGameBtn.click();
-                    document.removeEventListener('keydown', restartOnR);
-                }
-            });
+            enableParameterInputs();
+            // REMOVED: 'r' key listener from here
         };
 
-        // --- 게임 스크립트 동적 로딩 ---
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = `/static/${projectId}.js`;
@@ -273,7 +264,6 @@
         };
         document.body.appendChild(script);
 
-        // --- 게임 설정값 가져오기 ---
         function getGameSettings() {
             const settings = {};
             if (currentParams) {
@@ -284,11 +274,10 @@
             return settings;
         }
 
-        // --- 공통 게임 시작 함수 ---
         function handleStartGame() {
             hideGameOver();
             if (gameModule && typeof gameModule.startGame === 'function') {
-                disableParameterInputs(); // MODIFIED: 파라미터 비활성화
+                disableParameterInputs();
                 gameModule.startGame(getGameSettings());
                 startGameBtn.disabled = true;
                 canvas.focus();
@@ -298,11 +287,23 @@
             }
         }
         
-        // --- 게임 시작/재시작 버튼 이벤트 리스너 ---
         startGameBtn.addEventListener('click', handleStartGame);
         restartGameBtn.addEventListener('click', handleStartGame);
         
-        // --- 캔버스 포커스 시 스크롤 방지 ---
+        // NEW: Global restart key listener
+        document.addEventListener('keydown', (e) => {
+            // Do not trigger restart if user is typing in an input field, etc.
+            if (e.target.tagName.toLowerCase() === 'input') return;
+            
+            if (e.key.toLowerCase() === 'r') {
+                e.preventDefault();
+                if (gameModule && typeof gameModule.stopGame === 'function') {
+                    gameModule.stopGame();
+                }
+                restartGameBtn.click();
+            }
+        });
+        
         canvas.addEventListener('keydown', function(e) {
             if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
                 e.preventDefault();
