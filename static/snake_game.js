@@ -1,5 +1,3 @@
-// static/snake_game.js
-
 window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameRunning = false;
     let animationFrameId = null;
@@ -11,6 +9,29 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let score = 0;
     let changingDirection = false;
     let gameSpeed; // Will be set by settings
+
+    // --- 색상 생성 헬퍼 함수 ---
+
+    /**
+     * 밝은 무채색(회색)을 랜덤하게 생성합니다.
+     * @returns {string} CSS rgb 색상 문자열 (예: 'rgb(220, 220, 220)')
+     */
+    function generateRandomBrightGray() {
+        const value = Math.floor(Math.random() * 86) + 170; // 170 ~ 255 사이의 값
+        return `rgb(${value}, ${value}, ${value})`;
+    }
+
+    /**
+     * 밝은 유채색을 HSL 색 공간을 사용하여 랜덤하게 생성합니다.
+     * @returns {string} CSS hsl 색상 문자열 (예: 'hsl(120, 100%, 70%)')
+     */
+    function generateRandomBrightColor() {
+        const hue = Math.floor(Math.random() * 360); // 0 ~ 359 색상
+        const saturation = 100; // 100% 채도
+        const lightness = 70; // 70% 명도
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
 
     // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
@@ -76,33 +97,44 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
     function generateFood() {
         food = {
             x: Math.floor(Math.random() * (canvas.width / gridSize)),
-            y: Math.floor(Math.random() * (canvas.height / gridSize))
+            y: Math.floor(Math.random() * (canvas.height / gridSize)),
+            color: generateRandomBrightGray() // Food 생성 시 랜덤 무채색 할당
         };
     }
 
     function drawSnakePart(snakePart) {
-        ctx.fillStyle = 'lightgreen';
-        ctx.strokeStyle = 'darkgreen';
+        // 각 마디에 할당된 고유 색상으로 칠함
+        ctx.fillStyle = snakePart.color;
+        ctx.strokeStyle = '#101010'; // 테두리는 어두운 색으로 통일
         ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
         ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
     }
 
     function drawFood() {
-        ctx.fillStyle = 'red';
-        ctx.strokeStyle = 'darkred';
+        // Food에 할당된 색상으로 칠함
+        ctx.fillStyle = food.color;
+        ctx.strokeStyle = '#101010'; // 테두리는 어두운 색으로 통일
         ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
         ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
     }
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 배경색을 약간 밝은 검은색으로 설정
+        ctx.fillStyle = '#141414'; // rgb(20, 20, 20)
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         drawFood();
         snake.forEach(drawSnakePart);
         gameInfo.textContent = `Snake Game: Score: ${score}`;
     }
 
     function advanceSnake() {
-        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+        // 새로운 머리 부분에 랜덤 유채색 할당
+        const head = {
+            x: snake[0].x + dx,
+            y: snake[0].y + dy,
+            color: generateRandomBrightColor()
+        };
         snake.unshift(head);
 
         const didEatFood = head.x === food.x && head.y === food.y;
@@ -183,8 +215,13 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
 
             // Reset game state
             snake = [];
-            for(let i = 0; i < initialLength; i++) {
-                snake.push({x: 10 - i, y: 10});
+            for (let i = 0; i < initialLength; i++) {
+                // 초기 snake의 각 마디에도 랜덤 유채색 할당
+                snake.push({
+                    x: 10 - i,
+                    y: 10,
+                    color: generateRandomBrightColor()
+                });
             }
             dx = 1; // Initial direction to the right
             dy = 0;
