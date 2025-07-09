@@ -11,11 +11,10 @@
     <div class="relative flex justify-center items-center bg-gray-900 rounded-lg overflow-hidden shadow-inner" style="max-width: 100%; height: auto;">
         <canvas id="gameCanvas" class="border-2 border-gray-700 focus:outline-none" tabindex="0"></canvas>
         
-        <!-- Game Over Overlay (now relative to its parent container) -->
         <div id="gameOverOverlay" class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white text-center hidden">
             <h2 class="text-5xl font-bold mb-4" id="gameOverTitle">Game Over!</h2>
             <p class="text-2xl mb-6" id="gameOverScore"></p>
-            <button id="restartGameBtn" class="btn-primary text-xl py-3 px-6">Restart Game<br><span class="text-sm">(r) to restart</span></button>
+            <button id="restartGameBtn" class="btn-primary text-xl py-3 px-6">Restart Game<br><span class="text-sm">(r) to restart</span><br><span class="text-sm">(t) to randomize and restart</span></button>
         </div>
     </div>
     <div class="text-center mt-6">
@@ -104,9 +103,6 @@
                 {% else %}
                 <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
                 {% endif %}
-            </div>
-             <div class="text-center mt-4 text-gray-500">
-                (t) to randomize and restart
             </div>
         </div>
 
