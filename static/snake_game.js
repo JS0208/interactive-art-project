@@ -1,29 +1,27 @@
 window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameRunning = false;
     let animationFrameId = null;
-    let gridSize; // Will be set by settings
-    let snake; // Will be initialized by settings
+    let gridSize;
+    let snake;
     let food = {};
     let dx = 0;
     let dy = 0;
     let score = 0;
     let changingDirection = false;
-    let gameSpeed; // Will be set by settings
+    let gameSpeed;
 
-    // --- 색상 생성 헬퍼 함수 ---
     function generateRandomBrightGray() {
-        const value = Math.floor(Math.random() * 86) + 170; // 170 ~ 255 사이의 값
+        const value = Math.floor(Math.random() * 86) + 170;
         return `rgb(${value}, ${value}, ${value})`;
     }
 
     function generateRandomBrightColor() {
-        const hue = Math.floor(Math.random() * 360); // 0 ~ 359 색상
-        const saturation = 100; // 100% 채도
-        const lightness = 70; // 70% 명도
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 100;
+        const lightness = 70;
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
 
-    // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
     document.addEventListener("touchstart", handleTouchStart, false);
     document.addEventListener("touchmove", handleTouchMove, false);
@@ -38,9 +36,7 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
     }
 
     function handleTouchMove(event) {
-        if (!x1 || !y1) {
-            return;
-        }
+        if (!x1 || !y1) return;
         let x2 = event.touches[0].clientX;
         let y2 = event.touches[0].clientY;
         let xDiff = x2 - x1;
@@ -95,27 +91,27 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
     }
 
     // ==================================================================
-    // ✨ 여기가 수정된 함수입니다. ✨
+    // ✨ 여기가 최종 수정된 함수입니다. ✨
     // ==================================================================
     function advanceSnake() {
         const headPosition = { x: snake[0].x + dx, y: snake[0].y + dy };
-
         const didEatFood = headPosition.x === food.x && headPosition.y === food.y;
+
         if (didEatFood) {
-            // 음식을 먹었을 경우: 새로운 색상을 가진 마디를 머리에 추가
+            // 음식을 먹었을 경우: 새로운 색상의 머리를 맨 앞에 추가합니다.
             score += 10;
-            const newHead = { 
-                ...headPosition, 
-                color: generateRandomBrightColor() 
-            };
+            const newHead = { ...headPosition, color: generateRandomBrightColor() };
             snake.unshift(newHead);
             generateFood();
         } else {
-            // 음식을 먹지 않았을 경우: 꼬리를 떼서 머리 위치로 이동 (색상 유지)
-            const tail = snake.pop();
-            tail.x = headPosition.x;
-            tail.y = headPosition.y;
-            snake.unshift(tail);
+            // 음식을 먹지 않았을 경우: 꼬리부터 머리 방향으로 한 칸씩 위치를 이동시킵니다.
+            for (let i = snake.length - 1; i > 0; i--) {
+                snake[i].x = snake[i - 1].x;
+                snake[i].y = snake[i - 1].y;
+            }
+            // 마지막으로 머리의 위치를 업데이트합니다.
+            snake[0].x = headPosition.x;
+            snake[0].y = headPosition.y;
         }
     }
 
