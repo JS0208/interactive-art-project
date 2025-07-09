@@ -22,83 +22,127 @@
         <div id="game-info" class="mt-4 text-[var(--color-text-primary)] text-lg font-medium"></div>
         
         <div id="game-settings" class="mt-5 p-4 rounded-lg shadow-inner text-left">
-            <h3 class="text-xl font-semibold mb-3 text-[var(--color-text-primary)]">Game Settings:</h3>
-             <div class="mt-6 flex justify-center space-x-4">
-                <button id="resetParamsBtn" class="btn-secondary px-6 py-3 text-base font-semibold">Reset Parameters</button>
-                <button id="randomizeParamsBtn" class="btn-primary px-6 py-3 text-base font-semibold">Randomize Parameters</button>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-[var(--color-text-primary)]">Game Settings:</h3>
+                <div class="space-x-2">
+                    <button id="resetParamsBtn" class="btn-secondary px-4 py-2 text-sm font-semibold">Reset</button>
+                    <button id="randomizeParamsBtn" class="btn-primary px-4 py-2 text-sm font-semibold">Randomize</button>
+                </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
                 {% if project_id == 'brick_breaker' %}
-                <div>
-                    <label for="ballSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Speed:</label>
-                    <input type="range" id="ballSpeed" min="1" max="10" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="ballSpeedValue" class="text-sm text-[var(--color-text-primary)]">2</span>
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Ball & Paddle</h4>
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Speed: <span id="ballSpeedValue">2</span></label>
+                    <input type="range" id="ballSpeed" min="1" max="10" value="2" class="w-full slider">
+                    
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Ball Radius: <span id="ballRadiusValue">10</span></label>
+                    <input type="range" id="ballRadius" min="5" max="15" value="10" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Paddle Width: <span id="paddleWidthValue">75</span></label>
+                    <input type="range" id="paddleWidth" min="50" max="150" value="75" step="5" class="w-full slider">
+                    
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Paddle Speed: <span id="paddleSpeedValue">7</span></label>
+                    <input type="range" id="paddleSpeed" min="3" max="15" value="7" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Ball Acceleration: <span id="ballAccelerationValue">0.05</span></label>
+                    <input type="range" id="ballAcceleration" min="0" max="0.2" value="0.05" step="0.01" class="w-full slider">
                 </div>
-                <div>
-                    <label for="brickRows" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Rows:</label>
-                    <input type="range" id="brickRows" min="1" max="7" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickRowsValue" class="text-sm text-[var(--color-text-primary)]">3</span>
+                
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Bricks</h4>
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)]">Rows: <span id="brickRowsValue">3</span></label>
+                    <input type="range" id="brickRows" min="1" max="10" value="3" class="w-full slider">
+                    
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Columns: <span id="brickColsValue">5</span></label>
+                    <input type="range" id="brickCols" min="3" max="10" value="5" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Brick Width: <span id="brickWidthValue">75</span></label>
+                    <input type="range" id="brickWidth" min="50" max="100" value="75" step="5" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Brick Height: <span id="brickHeightValue">20</span></label>
+                    <input type="range" id="brickHeight" min="10" max="30" value="20" step="2" class="w-full slider">
                 </div>
-                <div>
-                    <label for="brickCols" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Columns:</label>
-                    <input type="range" id="brickCols" min="3" max="7" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickColsValue" class="text-sm text-[var(--color-text-primary)]">5</span>
+
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Game Rules & Effects</h4>
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)]">Lives: <span id="livesValue">3</span></label>
+                    <input type="range" id="lives" min="1" max="10" value="3" class="w-full slider">
+                    
+                    <div class="flex items-center mt-3">
+                        <input type="checkbox" id="stickyPaddle" class="h-4 w-4 rounded">
+                        <label for="stickyPaddle" class="ml-2 text-sm font-medium text-[var(--color-text-primary)]">Sticky Paddle</label>
+                    </div>
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Particle Size: <span id="particleSizeValue">10</span></label>
+                    <input type="range" id="particleSize" min="2" max="20" value="10" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Particle Lifespan: <span id="particleLifespanValue">0.02</span></label>
+                    <input type="range" id="particleLifespan" min="0.01" max="0.05" value="0.02" step="0.005" class="w-full slider">
+
+                    <div class="flex justify-between items-center mt-3">
+                        <label for="ballColor" class="text-sm font-medium text-[var(--color-text-primary)]">Ball Color</label>
+                        <input type="color" id="ballColor" value="#E0E0E0" class="p-1 h-8 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700">
+                    </div>
+                     <div class="flex justify-between items-center mt-2">
+                        <label for="paddleColor" class="text-sm font-medium text-[var(--color-text-primary)]">Paddle Color</label>
+                        <input type="color" id="paddleColor" value="#E0E0E0" class="p-1 h-8 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700">
+                    </div>
                 </div>
-                <div>
-                    <label for="paddleWidth" class="block text-sm font-medium text-[var(--color-text-primary)]">Paddle Width:</label>
-                    <input type="range" id="paddleWidth" min="50" max="150" value="75" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="paddleWidthValue" class="text-sm text-[var(--color-text-primary)]">75</span>
-                </div>
-                <div>
-                    <label for="ballRadius" class="block text-sm font-medium text-[var(--color-text-primary)]">Ball Radius:</label>
-                    <input type="range" id="ballRadius" min="5" max="15" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="ballRadiusValue" class="text-sm text-[var(--color-text-primary)]">10</span>
-                </div>
-                <div>
-                    <label for="brickWidth" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Width:</label>
-                    <input type="range" id="brickWidth" min="50" max="100" value="75" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickWidthValue" class="text-sm text-[var(--color-text-primary)]">75</span>
-                </div>
-                <div>
-                    <label for="brickHeight" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Height:</label>
-                    <input type="range" id="brickHeight" min="10" max="30" value="20" step="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickHeightValue" class="text-sm text-[var(--color-text-primary)]">20</span>
-                </div>
-                <div>
-                    <label for="brickPadding" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Padding:</label>
-                    <input type="range" id="brickPadding" min="5" max="20" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickPaddingValue" class="text-sm text-[var(--color-text-primary)]">10</span>
-                </div>
-                <div>
-                    <label for="brickOffsetTop" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Offset Top:</label>
-                    <input type="range" id="brickOffsetTop" min="10" max="50" value="30" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickOffsetTopValue" class="text-sm text-[var(--color-text-primary)]">30</span>
-                </div>
-                <div>
-                    <label for="brickOffsetLeft" class="block text-sm font-medium text-[var(--color-text-primary)]">Brick Offset Left:</label>
-                    <input type="range" id="brickOffsetLeft" min="10" max="50" value="30" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="brickOffsetLeftValue" class="text-sm text-[var(--color-text-primary)]">30</span>
-                </div>
+
                 {% elif project_id == 'snake_game' %}
-                <div>
-                    <label for="snakeSpeed" class="block text-sm font-medium text-[var(--color-text-primary)]">Snake Speed (ms):</label>
-                    <input type="range" id="snakeSpeed" min="30" max="200" value="100" step="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="snakeSpeedValue" class="text-sm text-[var(--color-text-primary)]">100</span>
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Gameplay</h4>
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)]">Speed (delay ms): <span id="snakeSpeedValue">100</span></label>
+                    <input type="range" id="snakeSpeed" min="30" max="200" value="100" step="10" class="w-full slider">
+                    
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Grid Size (px): <span id="gridSizeValue">20</span></label>
+                    <input type="range" id="gridSize" min="10" max="40" value="20" step="2" class="w-full slider">
+                    
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Initial Length: <span id="initialLengthValue">3</span></label>
+                    <input type="range" id="initialLength" min="1" max="10" value="3" class="w-full slider">
+
+                    <label class="block text-sm font-medium text-[var(--color-text-primary)] mt-2">Growth Factor: <span id="growthFactorValue">1</span></label>
+                    <input type="range" id="growthFactor" min="1" max="5" value="1" class="w-full slider">
                 </div>
-                <div>
-                    <label for="gridSize" class="block text-sm font-medium text-[var(--color-text-primary)]">Grid Size (px):</label>
-                    <input type="range" id="gridSize" min="10" max="40" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="gridSizeValue" class="text-sm text-[var(--color-text-primary)]">20</span>
+
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Rules</h4>
+                     <label for="wallBehavior" class="block text-sm font-medium text-[var(--color-text-primary)]">Wall Behavior</label>
+                    <select id="wallBehavior" class="w-full p-2 mt-1 rounded-md bg-gray-200 dark:bg-gray-700 text-[var(--color-text-primary)]">
+                        <option value="gameOver">Game Over</option>
+                        <option value="wrapAround">Wrap Around</option>
+                    </select>
+
+                    <div class="flex items-center mt-4">
+                        <input type="checkbox" id="selfCollision" checked class="h-4 w-4 rounded">
+                        <label for="selfCollision" class="ml-2 text-sm font-medium text-[var(--color-text-primary)]">Game Over on Self-Collision</label>
+                    </div>
+                    <div class="flex items-center mt-3">
+                        <input type="checkbox" id="gridVisible" class="h-4 w-4 rounded">
+                        <label for="gridVisible" class="ml-2 text-sm font-medium text-[var(--color-text-primary)]">Show Grid</label>
+                    </div>
                 </div>
-                <div>
-                    <label for="initialLength" class="block text-sm font-medium text-[var(--color-text-primary)]">Initial Length:</label>
-                    <input type="range" id="initialLength" min="1" max="10" value="3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="initialLengthValue" class="text-sm text-[var(--color-text-primary)]">3</span>
-                </div>
-                <div>
-                    <label for="foodSpawnRate" class="block text-sm font-medium text-[var(--color-text-primary)]">Food Spawn Rate:</label>
-                    <input type="range" id="foodSpawnRate" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-                    <span id="foodSpawnRateValue" class="text-sm text-[var(--color-text-primary)]">5</span>
+
+                <div class="p-4 border rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-[var(--color-text-primary)]">Appearance</h4>
+                     <label for="snakeColorMode" class="block text-sm font-medium text-[var(--color-text-primary)]">Snake Color Mode</label>
+                    <select id="snakeColorMode" class="w-full p-2 mt-1 rounded-md bg-gray-200 dark:bg-gray-700 text-[var(--color-text-primary)]">
+                        <option value="rainbow">Rainbow</option>
+                        <option value="solid">Solid</option>
+                        <option value="gradient">Gradient</option>
+                    </select>
+                    <div id="snakeColorPickers" class="mt-2 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label for="snakeHeadColor" class="text-sm font-medium text-[var(--color-text-primary)]">Head Color</label>
+                            <input type="color" id="snakeHeadColor" value="#FFFFFF" class="color-picker">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="snakeTailColor" class="text-sm font-medium text-[var(--color-text-primary)]">Tail Color</label>
+                            <input type="color" id="snakeTailColor" value="#808080" class="color-picker">
+                        </div>
+                    </div>
                 </div>
                 {% else %}
                 <p class="text-sm text-[var(--color-text-primary)]">No specific settings for this art piece.</p>
@@ -111,6 +155,7 @@
             <ul class="list-disc list-inside text-left mx-auto max-w-md text-[var(--color-text-primary)]">
                 {% if project_id == 'brick_breaker' %}
                 <li>Left/Right Arrow Keys or Touch: Move Paddle</li>
+                <li>Spacebar/Tap: Launch Ball (with Sticky Paddle)</li>
                 {% elif project_id == 'snake_game' %}
                 <li>Arrow Keys or Swipe: Change Snake Direction</li>
                 {% else %}
@@ -121,213 +166,294 @@
     </div>
 </div>
 
+<style>
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: #ddd;
+        outline: none;
+        opacity: 0.9;
+        transition: opacity .2s;
+    }
+    .dark .slider { background: #4a5568; }
+    .slider:hover { opacity: 1; }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        cursor: pointer;
+    }
+    .color-picker {
+        padding: 2px;
+        height: 2rem;
+        width: 3.5rem;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 0.375rem;
+        cursor: pointer;
+    }
+    .dark .color-picker { background-color: #1a202c; border-color: #4a5568; }
+</style>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- 기본 변수 및 요소 선택 ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const startGameBtn = document.getElementById('start-game-btn');
-        const restartGameBtn = document.getElementById('restartGameBtn');
-        const gameInfo = document.getElementById('game-info');
-        const gameOverOverlay = document.getElementById('gameOverOverlay');
-        const gameOverTitle = document.getElementById('gameOverTitle');
-        const gameOverScore = document.getElementById('gameOverScore');
-        const resetParamsBtn = document.getElementById('resetParamsBtn');
-        const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
-        const projectId = "{{ project_id }}";
-        let gameModule = null;
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const restartGameBtn = document.getElementById('restartGameBtn');
+    const gameInfo = document.getElementById('game-info');
+    const gameOverOverlay = document.getElementById('gameOverOverlay');
+    const gameOverTitle = document.getElementById('gameOverTitle');
+    const gameOverScore = document.getElementById('gameOverScore');
+    const resetParamsBtn = document.getElementById('resetParamsBtn');
+    const randomizeParamsBtn = document.getElementById('randomizeParamsBtn');
+    const projectId = "{{ project_id }}";
+    let gameModule = null;
 
-        // --- 캔버스 크기 동적 조절 ---
-        function setCanvasSize() {
-            const parentDiv = canvas.parentElement;
-            const aspectRatio = 600 / 400;
-            let newWidth = parentDiv.clientWidth > 600 ? 600 : parentDiv.clientWidth;
-            canvas.width = newWidth;
-            canvas.height = newWidth / aspectRatio;
+    function setCanvasSize() {
+        const parentDiv = canvas.parentElement;
+        const aspectRatio = 600 / 400; 
+        let newWidth = parentDiv.clientWidth > 800 ? 800 : parentDiv.clientWidth;
+        canvas.width = newWidth;
+        canvas.height = newWidth / aspectRatio;
+    }
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
+
+    // --- 파라미터 설정 ---
+    const paramsConfig = {
+        brick_breaker: {
+            ballSpeed: { el: 'ballSpeed', type: 'range', default: 2, min: 1, max: 10 },
+            ballRadius: { el: 'ballRadius', type: 'range', default: 10, min: 5, max: 15 },
+            paddleWidth: { el: 'paddleWidth', type: 'range', default: 75, min: 50, max: 150, step: 5 },
+            paddleSpeed: { el: 'paddleSpeed', type: 'range', default: 7, min: 3, max: 15 },
+            ballAcceleration: { el: 'ballAcceleration', type: 'range', default: 0.05, min: 0, max: 0.2, step: 0.01 },
+            brickRows: { el: 'brickRows', type: 'range', default: 3, min: 1, max: 10 },
+            brickCols: { el: 'brickCols', type: 'range', default: 5, min: 3, max: 10 },
+            brickWidth: { el: 'brickWidth', type: 'range', default: 75, min: 50, max: 100, step: 5 },
+            brickHeight: { el: 'brickHeight', type: 'range', default: 20, min: 10, max: 30, step: 2 },
+            lives: { el: 'lives', type: 'range', default: 3, min: 1, max: 10 },
+            stickyPaddle: { el: 'stickyPaddle', type: 'checkbox', default: false },
+            particleSize: { el: 'particleSize', type: 'range', default: 10, min: 2, max: 20 },
+            particleLifespan: { el: 'particleLifespan', type: 'range', default: 0.02, min: 0.01, max: 0.05, step: 0.005 },
+            ballColor: { el: 'ballColor', type: 'color', default: '#E0E0E0' },
+            paddleColor: { el: 'paddleColor', type: 'color', default: '#E0E0E0' },
+        },
+        snake_game: {
+            snakeSpeed: { el: 'snakeSpeed', type: 'range', default: 100, min: 30, max: 200, step: 10 },
+            gridSize: { el: 'gridSize', type: 'range', default: 20, min: 10, max: 40, step: 2 },
+            initialLength: { el: 'initialLength', type: 'range', default: 3, min: 1, max: 10 },
+            growthFactor: { el: 'growthFactor', type: 'range', default: 1, min: 1, max: 5 },
+            wallBehavior: { el: 'wallBehavior', type: 'select', default: 'gameOver' },
+            selfCollision: { el: 'selfCollision', type: 'checkbox', default: true },
+            gridVisible: { el: 'gridVisible', type: 'checkbox', default: false },
+            snakeColorMode: { el: 'snakeColorMode', type: 'select', default: 'rainbow' },
+            snakeHeadColor: { el: 'snakeHeadColor', type: 'color', default: '#FFFFFF' },
+            snakeTailColor: { el: 'snakeTailColor', type: 'color', default: '#808080' },
         }
-        setCanvasSize();
-        window.addEventListener('resize', setCanvasSize);
+    };
+    
+    const currentParams = paramsConfig[projectId];
 
-        // --- 게임 설정(파라미터) 관리 ---
-        const paramsConfig = {
-            brick_breaker: {
-                ballSpeed: { element: document.getElementById('ballSpeed'), valueSpan: document.getElementById('ballSpeedValue'), default: 2, min: 1, max: 10 },
-                brickRows: { element: document.getElementById('brickRows'), valueSpan: document.getElementById('brickRowsValue'), default: 3, min: 1, max: 7 },
-                brickCols: { element: document.getElementById('brickCols'), valueSpan: document.getElementById('brickColsValue'), default: 5, min: 3, max: 7 },
-                paddleWidth: { element: document.getElementById('paddleWidth'), valueSpan: document.getElementById('paddleWidthValue'), default: 75, min: 50, max: 150, step: 5 },
-                ballRadius: { element: document.getElementById('ballRadius'), valueSpan: document.getElementById('ballRadiusValue'), default: 10, min: 5, max: 15 },
-                brickWidth: { element: document.getElementById('brickWidth'), valueSpan: document.getElementById('brickWidthValue'), default: 75, min: 50, max: 100, step: 5 },
-                brickHeight: { element: document.getElementById('brickHeight'), valueSpan: document.getElementById('brickHeightValue'), default: 20, min: 10, max: 30, step: 2 },
-                brickPadding: { element: document.getElementById('brickPadding'), valueSpan: document.getElementById('brickPaddingValue'), default: 10, min: 5, max: 20, step: 1 },
-                brickOffsetTop: { element: document.getElementById('brickOffsetTop'), valueSpan: document.getElementById('brickOffsetTopValue'), default: 30, min: 10, max: 50, step: 5 },
-                brickOffsetLeft: { element: document.getElementById('brickOffsetLeft'), valueSpan: document.getElementById('brickOffsetLeftValue'), default: 30, min: 10, max: 50, step: 5 }
-            },
-            snake_game: {
-                snakeSpeed: { element: document.getElementById('snakeSpeed'), valueSpan: document.getElementById('snakeSpeedValue'), default: 100, min: 30, max: 200, step: 10 },
-                gridSize: { element: document.getElementById('gridSize'), valueSpan: document.getElementById('gridSizeValue'), default: 20, min: 10, max: 40, step: 5 },
-                initialLength: { element: document.getElementById('initialLength'), valueSpan: document.getElementById('initialLengthValue'), default: 3, min: 1, max: 10 },
-                foodSpawnRate: { element: document.getElementById('foodSpawnRate'), valueSpan: document.getElementById('foodSpawnRateValue'), default: 5, min: 1, max: 10 }
+    function setupEventListeners() {
+        if (!currentParams) return;
+        for (const key in currentParams) {
+            const param = currentParams[key];
+            param.element = document.getElementById(param.el);
+            if(param.element) {
+                param.element.addEventListener('input', () => updateValue(key));
+                if (param.type === 'range') {
+                    param.valueSpan = document.getElementById(`${param.el}Value`);
+                }
             }
-        };
-        const currentParams = paramsConfig[projectId];
+        }
+        if (projectId === 'snake_game') {
+            const colorModeSelect = document.getElementById('snakeColorMode');
+            if (colorModeSelect) {
+                colorModeSelect.addEventListener('change', toggleSnakeColorPickers);
+                toggleSnakeColorPickers();
+            }
+        }
+    }
 
+    function toggleSnakeColorPickers() {
+        const mode = document.getElementById('snakeColorMode').value;
+        const pickersDiv = document.getElementById('snakeColorPickers');
+        if (!pickersDiv) return;
+        
+        const headPicker = document.getElementById('snakeHeadColor').parentElement;
+        const tailPicker = document.getElementById('snakeTailColor').parentElement;
+
+        if (mode === 'solid') {
+            pickersDiv.style.display = 'block';
+            headPicker.style.display = 'flex';
+            tailPicker.style.display = 'none';
+        } else if (mode === 'gradient') {
+            pickersDiv.style.display = 'block';
+            headPicker.style.display = 'flex';
+            tailPicker.style.display = 'flex';
+        } else { // rainbow
+            pickersDiv.style.display = 'none';
+        }
+    }
+
+    function updateValue(key, value) {
+        const param = currentParams[key];
+        if (!param || !param.element) return;
+        const displayValue = value !== undefined ? value : param.element.value;
+        if (param.type === 'range' && param.valueSpan) {
+            param.valueSpan.textContent = displayValue;
+        }
+    }
+
+    function toggleParameterInputs(disabled) {
+        if (currentParams) {
+            for (const key in currentParams) {
+                if (currentParams[key] && currentParams[key].element) {
+                    currentParams[key].element.disabled = disabled;
+                }
+            }
+        }
+        if (resetParamsBtn) resetParamsBtn.disabled = disabled;
+        if (randomizeParamsBtn) randomizeParamsBtn.disabled = disabled;
+    }
+
+    function resetParameters() {
+        if (!currentParams) return;
+        for (const key in currentParams) {
+            const param = currentParams[key];
+            if (param && param.element) {
+                if (param.type === 'checkbox') {
+                    param.element.checked = param.default;
+                } else {
+                    param.element.value = param.default;
+                }
+                updateValue(key, param.default);
+            }
+        }
+        if (projectId === 'snake_game') toggleSnakeColorPickers();
+    }
+
+    function randomizeParameters() {
+        if (!currentParams) return;
+        for (const key in currentParams) {
+            const param = currentParams[key];
+            if (param && param.element) {
+                if (param.type === 'range') {
+                    const step = parseFloat(param.element.step) || 1;
+                    const min = parseFloat(param.element.min);
+                    const max = parseFloat(param.element.max);
+                    const numSteps = (max - min) / step;
+                    const randomStep = Math.round(Math.random() * numSteps);
+                    let randomValue = min + randomStep * step;
+                    if (step < 1) randomValue = parseFloat(randomValue.toFixed(2));
+                    param.element.value = randomValue;
+                    updateValue(key, randomValue);
+                } else if (param.type === 'checkbox') {
+                    param.element.checked = Math.random() < 0.5;
+                } else if (param.type === 'select') {
+                    const options = param.element.options;
+                    param.element.selectedIndex = Math.floor(Math.random() * options.length);
+                } else if (param.type === 'color') {
+                    param.element.value = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
+                }
+            }
+        }
+        if (projectId === 'snake_game') toggleSnakeColorPickers();
+    }
+
+    resetParamsBtn.addEventListener('click', resetParameters);
+    randomizeParamsBtn.addEventListener('click', randomizeParameters);
+
+    window.hideGameOver = function() { gameOverOverlay.classList.add('hidden'); };
+    window.showGameOver = function(title, score) {
+        gameOverTitle.textContent = title;
+        gameOverScore.textContent = score;
+        gameOverOverlay.classList.remove('hidden');
+        startGameBtn.disabled = false;
+        document.body.classList.remove('overflow-hidden');
+        toggleParameterInputs(false);
+    };
+
+    function getGameSettings() {
+        const settings = {};
         if (currentParams) {
             for (const key in currentParams) {
                 const param = currentParams[key];
                 if (param && param.element) {
-                    param.element.oninput = () => { 
-                        if(param.valueSpan) param.valueSpan.textContent = param.element.value; 
-                    };
-                }
-            }
-        }
-
-        function disableParameterInputs() {
-            if (currentParams) {
-                for (const key in currentParams) {
-                    if (currentParams[key] && currentParams[key].element) {
-                        currentParams[key].element.disabled = true;
-                    }
-                }
-                if (resetParamsBtn) resetParamsBtn.disabled = true;
-                if (randomizeParamsBtn) randomizeParamsBtn.disabled = true;
-            }
-        }
-
-        function enableParameterInputs() {
-            if (currentParams) {
-                for (const key in currentParams) {
-                    if (currentParams[key] && currentParams[key].element) {
-                        currentParams[key].element.disabled = false;
-                    }
-                }
-                if (resetParamsBtn) resetParamsBtn.disabled = false;
-                if (randomizeParamsBtn) randomizeParamsBtn.disabled = false;
-            }
-        }
-
-        if (resetParamsBtn) {
-            resetParamsBtn.addEventListener('click', () => {
-                if (currentParams) {
-                    for (const key in currentParams) {
-                        const param = currentParams[key];
-                        if (param && param.element) {
-                            param.element.value = param.default;
-                            if(param.valueSpan) param.valueSpan.textContent = param.default;
-                        }
-                    }
-                }
-            });
-        }
-        
-        // NEW: Randomize 로직을 함수로 분리
-        function randomizeParameters() {
-            if (currentParams) {
-                for (const key in currentParams) {
-                    const param = currentParams[key];
-                    if (param && param.element) {
-                        const step = param.step || 1;
-                        const numSteps = (param.max - param.min) / step;
-                        const randomValue = param.min + Math.round(Math.random() * numSteps) * step;
-                        param.element.value = randomValue;
-                        if(param.valueSpan) param.valueSpan.textContent = randomValue;
+                    const el = param.element;
+                    if (el.type === 'checkbox') {
+                        settings[key] = el.checked;
+                    } else if (el.type === 'range' || el.type === 'number') {
+                        settings[key] = parseFloat(el.value);
+                    } else {
+                        settings[key] = el.value;
                     }
                 }
             }
         }
+        return settings;
+    }
 
-        if (randomizeParamsBtn) {
-            // CHANGED: 분리된 함수를 이벤트 리스너에 연결
-            randomizeParamsBtn.addEventListener('click', randomizeParameters);
+    function handleStartGame() {
+        hideGameOver();
+        if (gameModule && typeof gameModule.startGame === 'function') {
+            toggleParameterInputs(true);
+            gameModule.startGame(getGameSettings());
+            startGameBtn.disabled = true;
+            canvas.focus();
+            document.body.classList.add('overflow-hidden');
+        } else {
+            gameInfo.textContent = "Game not ready or start function missing.";
         }
+    }
 
-        window.hideGameOver = function() { gameOverOverlay.classList.add('hidden'); };
-        window.showGameOver = function(title, score) {
-            gameOverTitle.textContent = title;
-            gameOverScore.textContent = score;
-            gameOverOverlay.classList.remove('hidden');
-            startGameBtn.disabled = false;
-            document.body.classList.remove('overflow-hidden');
-            enableParameterInputs();
-        };
+    startGameBtn.addEventListener('click', handleStartGame);
+    restartGameBtn.addEventListener('click', handleStartGame);
 
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = `/static/${projectId}.js`;
-        script.onload = () => {
-            const gameFunctionName = `${projectId}Game`;
-            if (typeof window[gameFunctionName] === 'function') {
-                gameModule = window[gameFunctionName](canvas, ctx, gameInfo);
-                gameInfo.textContent = `Ready to play ${projectId.replace(/_/g, ' ')}!`;
-            } else {
-                gameInfo.textContent = `Error: Game module for ${projectId} not found.`;
-                console.error(`Game module for ${projectId} not found.`);
-            }
-        };
-        script.onerror = () => {
-            gameInfo.textContent = `Error loading game script for ${projectId}.`;
-        };
-        document.body.appendChild(script);
-
-        function getGameSettings() {
-            const settings = {};
-            if (currentParams) {
-                for (const key in currentParams) {
-                    const param = currentParams[key];
-                    if (param && param.element) {
-                        settings[key] = parseInt(param.element.value, 10);
-                    }
-                }
-            }
-            return settings;
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName.toLowerCase() === 'input') return;
+        if (e.key.toLowerCase() === 'r') {
+            e.preventDefault();
+            if (gameModule && typeof gameModule.stopGame === 'function') gameModule.stopGame();
+            handleStartGame();
         }
-
-        function handleStartGame() {
-            hideGameOver();
-            if (gameModule && typeof gameModule.startGame === 'function') {
-                disableParameterInputs();
-                gameModule.startGame(getGameSettings());
-                startGameBtn.disabled = true;
-                canvas.focus();
-                document.body.classList.add('overflow-hidden');
-            } else {
-                gameInfo.textContent = "Game not ready or start function missing.";
-            }
+        if (e.key.toLowerCase() === 't') {
+            e.preventDefault();
+            if (!randomizeParamsBtn.disabled) randomizeParameters();
+            if (gameModule && typeof gameModule.stopGame === 'function') gameModule.stopGame();
+            handleStartGame();
         }
-
-        startGameBtn.addEventListener('click', handleStartGame);
-        restartGameBtn.addEventListener('click', handleStartGame);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName.toLowerCase() === 'input') return;
-
-            // CHANGED: 'r' 키 핸들러가 handleStartGame을 직접 호출하도록 수정
-            if (e.key.toLowerCase() === 'r') {
-                e.preventDefault();
-                if (gameModule && typeof gameModule.stopGame === 'function') {
-                    gameModule.stopGame();
-                }
-                handleStartGame();
-            }
-
-            // CHANGED: 't' 키 핸들러가 randomize 함수와 handleStartGame 함수를 직접 순차적으로 호출
-            if (e.key.toLowerCase() === 't') {
-                e.preventDefault();
-                if (randomizeParamsBtn && !randomizeParamsBtn.disabled) {
-                    randomizeParameters(); // 1. 파라미터 무작위화 함수 직접 호출
-                }
-                if (gameModule && typeof gameModule.stopGame === 'function') {
-                    gameModule.stopGame(); // 2. 기존 게임 정지
-                }
-                handleStartGame(); // 3. 새 설정으로 게임 재시작 함수 직접 호출
-            }
-        });
-
-        canvas.addEventListener('keydown', function(e) {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                e.preventDefault();
-            }
-        });
     });
+
+    canvas.addEventListener('keydown', (e) => {
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+    
+    // --- 초기화 ---
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = `/static/${projectId}.js`;
+    script.onload = () => {
+        const gameFunctionName = `${projectId}Game`;
+        if (typeof window[gameFunctionName] === 'function') {
+            gameModule = window[gameFunctionName](canvas, ctx, gameInfo, window);
+            gameInfo.textContent = `Ready to play ${projectId.replace(/_/g, ' ')}!`;
+            setupEventListeners();
+            resetParameters();
+        } else {
+            gameInfo.textContent = `Error: Game module for ${projectId} not found.`;
+        }
+    };
+    script.onerror = () => { gameInfo.textContent = `Error loading game script for ${projectId}.`; };
+    document.body.appendChild(script);
+});
 </script>
 {% endblock %}
