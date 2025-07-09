@@ -5,7 +5,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
 
     // --- 게임 변수 ---
     let ball, paddle, bricks = [], gameSettings;
-    let rightPressed = false, leftPressed = false, spacePressed = false;
+    let rightPressed = false, leftPressed = false;
     let lives;
 
     // --- 이벤트 리스너 ---
@@ -19,12 +19,10 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
     function keyDownHandler(e) {
         if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
         else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
-        else if (e.key === " ") spacePressed = true;
     }
     function keyUpHandler(e) {
         if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
         else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-        else if (e.key === " ") spacePressed = false;
     }
     function touchStartHandler(e) {
         e.preventDefault();
@@ -32,7 +30,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         touchStartX = touch.clientX;
         touchCurrentX = touch.clientX;
         touchActive = true;
-        if (ball.isSticky) launchBall();
     }
     function touchMoveHandler(e) {
         if (touchActive) {
@@ -57,21 +54,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         ball.y = canvas.height - paddle.height - ball.radius;
         ball.dx = (Math.random() - 0.5) * gameSettings.ballSpeed * 2;
         ball.dy = -gameSettings.ballSpeed;
-        
-        if (gameSettings.stickyPaddle) {
-            ball.isSticky = true;
-        }
-    }
-
-    function launchBall() {
-        if (ball.isSticky) {
-            ball.isSticky = false;
-            // 발사 시 속도 초기화
-            const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-            const launchSpeed = gameSettings.ballSpeed > 0 ? gameSettings.ballSpeed : 2;
-            ball.dx = (Math.random() - 0.5) * launchSpeed;
-            ball.dy = -launchSpeed;
-        }
     }
     
     function updateGameInfo() {
@@ -169,13 +151,8 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         collisionDetection();
 
         // 공 이동
-        if (ball.isSticky) {
-            ball.x = paddle.x + paddle.width / 2;
-            if (spacePressed) launchBall();
-        } else {
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-        }
+        ball.x += ball.dx;
+        ball.y += ball.dy;
         
         // 벽 충돌
         if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
@@ -191,9 +168,6 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
                     ball.dx *= (1 + gameSettings.ballAcceleration);
                     ball.dy *= (1 + gameSettings.ballAcceleration);
                 }
-                // 끈끈이 패들 재적용
-                if (gameSettings.stickyPaddle) ball.isSticky = true;
-
             } else if (ball.y > canvas.height - ball.radius) {
                 lives--;
                 if (lives > 0) {
@@ -223,8 +197,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         
         ball = {
             radius: gameSettings.ballRadius * scaleFactor,
-            color: gameSettings.ballColor,
-            isSticky: false
+            color: gameSettings.ballColor
         };
         paddle = {
             height: 10 * scaleFactor,
