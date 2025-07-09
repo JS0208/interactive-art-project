@@ -1,202 +1,221 @@
-window.snake_gameGame = function(canvas, ctx, gameInfo) {
-    let gameRunning = false;
-    let animationFrameId = null;
-    let gridSize;
-    let snake;
-    let food = {};
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
+window.snake_gameGame = function(canvas, ctx, gameInfo, globalScope) {
+    let gameRunning = false, animationFrameId = null, gameLoopTimeout = null;
+    let snake, food, dx, dy, score, gameSettings;
     let changingDirection = false;
-    let gameSpeed;
-
-    function generateRandomBrightGray() {
-        const value = Math.floor(Math.random() * 86) + 170;
-        return `rgb(${value}, ${value}, ${value})`;
-    }
-
-    function generateRandomBrightColor() {
-        const hue = Math.floor(Math.random() * 360);
-        const saturation = 100;
-        const lightness = 70;
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    }
-
+    
+    // --- 이벤트 리스너 ---
     document.addEventListener("keydown", changeDirection);
-    document.addEventListener("touchstart", handleTouchStart, false);
-    document.addEventListener("touchmove", handleTouchMove, false);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    let x1 = null, y1 = null;
 
-    let x1 = null;
-    let y1 = null;
+    function changeDirection(event) {
+        if (changingDirection) return;
+        const keyPressed = event.keyCode;
+        const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
 
-    function handleTouchStart(event) {
-        const firstTouch = event.touches[0];
-        x1 = firstTouch.clientX;
-        y1 = firstTouch.clientY;
+        if (keyPressed === 37 && !goingRight) { dx = -1; dy = 0; }
+        else if (keyPressed === 38 && !goingDown) { dx = 0; dy = -1; }
+        else if (keyPressed === 39 && !goingLeft) { dx = 1; dy = 0; }
+        else if (keyPressed === 40 && !goingUp) { dx = 0; dy = 1; }
+        else return;
+        changingDirection = true;
     }
 
-    function handleTouchMove(event) {
+    function handleTouchStart(e) { e.preventDefault(); const t = e.touches[0]; x1 = t.clientX; y1 = t.clientY; }
+    function handleTouchMove(e) {
         if (!x1 || !y1) return;
-        let x2 = event.touches[0].clientX;
-        let y2 = event.touches[0].clientY;
-        let xDiff = x2 - x1;
-        let yDiff = y2 - y1;
-
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            if (xDiff > 0) {
-                if (dx === 0) { dx = 1; dy = 0; }
-            } else {
-                if (dx === 0) { dx = -1; dy = 0; }
-            }
-        } else {
-            if (yDiff > 0) {
-                if (dy === 0) { dx = 0; dy = 1; }
-            } else {
-                if (dy === 0) { dx = 0; dy = -1; }
-            }
+        e.preventDefault();
+        const x2 = e.touches[0].clientX, y2 = e.touches[0].clientY;
+        const xDiff = x2 - x1, yDiff = y2 - y1;
+        const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+        
+        if (Math.abs(xDiff) > Math.abs(yDiff)) { // Horizontal swipe
+            if (xDiff > 0 && !goingLeft) { dx = 1; dy = 0; } 
+            else if (xDiff < 0 && !goingRight) { dx = -1; dy = 0; }
+        } else { // Vertical swipe
+            if (yDiff > 0 && !goingUp) { dx = 0; dy = 1; } 
+            else if (yDiff < 0 && !goingDown) { dx = 0; dy = -1; }
         }
-        x1 = null;
-        y1 = null;
-        event.preventDefault();
+        changingDirection = true;
+        x1 = null; y1 = null;
+    }
+
+    // --- 색상 및 생성 함수 ---
+    function generateRandomBrightColor() {
+        return `hsl(${Math.random() * 360}, 100%, 70%)`;
+    }
+    
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16)
+        } : null;
     }
 
     function generateFood() {
+        const cols = Math.floor(canvas.width / gameSettings.gridSize);
+        const rows = Math.floor(canvas.height / gameSettings.gridSize);
         food = {
-            x: Math.floor(Math.random() * (canvas.width / gridSize)),
-            y: Math.floor(Math.random() * (canvas.height / gridSize)),
-            color: generateRandomBrightGray()
+            x: Math.floor(Math.random() * cols),
+            y: Math.floor(Math.random() * rows),
+            color: `rgb(200, 200, 200)`
         };
     }
 
-    function drawSnakePart(snakePart) {
-        ctx.fillStyle = snakePart.color;
-        ctx.strokeStyle = '#101010';
-        ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-        ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+    // --- 그리기 함수 ---
+    function drawGrid() {
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 0.5;
+        for (let x = 0; x < canvas.width; x += gameSettings.gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += gameSettings.gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+    }
+
+    function drawSnake() {
+        snake.forEach(part => {
+            ctx.fillStyle = part.color;
+            ctx.fillRect(part.x * gameSettings.gridSize, part.y * gameSettings.gridSize, gameSettings.gridSize, gameSettings.gridSize);
+        });
     }
 
     function drawFood() {
         ctx.fillStyle = food.color;
-        ctx.strokeStyle = '#101010';
-        ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-        ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+        ctx.fillRect(food.x * gameSettings.gridSize, food.y * gameSettings.gridSize, gameSettings.gridSize, gameSettings.gridSize);
     }
-
+    
     function draw() {
         ctx.fillStyle = '#141414';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (gameSettings.gridVisible) drawGrid();
+        drawSnake();
         drawFood();
-        snake.forEach(drawSnakePart);
-        gameInfo.textContent = `Snake Game: Score: ${score}`;
     }
 
-    // ==================================================================
-    // ✨ 여기가 최종 수정된 함수입니다. ✨
-    // ==================================================================
+    // --- 게임 로직 ---
     function advanceSnake() {
-        const headPosition = { x: snake[0].x + dx, y: snake[0].y + dy };
-        const didEatFood = headPosition.x === food.x && headPosition.y === food.y;
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy, color: snake[0].color };
 
+        // 벽 처리
+        const cols = Math.floor(canvas.width / gameSettings.gridSize);
+        const rows = Math.floor(canvas.height / gameSettings.gridSize);
+        if (gameSettings.wallBehavior === 'wrapAround') {
+            if (head.x < 0) head.x = cols - 1;
+            if (head.x >= cols) head.x = 0;
+            if (head.y < 0) head.y = rows - 1;
+            if (head.y >= rows) head.y = 0;
+        }
+
+        snake.unshift(head); // 새 머리 추가
+
+        const didEatFood = head.x === food.x && head.y === food.y;
         if (didEatFood) {
-            // 음식을 먹었을 경우: 새로운 색상의 머리를 맨 앞에 추가합니다.
             score += 10;
-            const newHead = { ...headPosition, color: generateRandomBrightColor() };
-            snake.unshift(newHead);
+            for(let i=1; i < gameSettings.growthFactor; i++){
+                snake.push({ ...snake[snake.length-1] }); // 꼬리 복제
+            }
             generateFood();
         } else {
-            // 음식을 먹지 않았을 경우: 꼬리부터 머리 방향으로 한 칸씩 위치를 이동시킵니다.
-            for (let i = snake.length - 1; i > 0; i--) {
-                snake[i].x = snake[i - 1].x;
-                snake[i].y = snake[i - 1].y;
+            snake.pop(); // 꼬리 제거
+        }
+        
+        // 색상 업데이트
+        updateSnakeColors();
+    }
+    
+    function updateSnakeColors(){
+        const mode = gameSettings.snakeColorMode;
+        if (mode === 'rainbow') {
+            snake[0].color = generateRandomBrightColor();
+        } else if (mode === 'solid') {
+            snake.forEach(p => p.color = gameSettings.snakeHeadColor);
+        } else if (mode === 'gradient') {
+            const startColor = hexToRgb(gameSettings.snakeHeadColor);
+            const endColor = hexToRgb(gameSettings.snakeTailColor);
+            if (!startColor || !endColor) return; // 색상 변환 실패 시 중단
+            
+            for (let i = 0; i < snake.length; i++) {
+                const ratio = i / (snake.length -1 || 1);
+                const r = Math.round(startColor.r + (endColor.r - startColor.r) * ratio);
+                const g = Math.round(startColor.g + (endColor.g - startColor.g) * ratio);
+                const b = Math.round(startColor.b + (endColor.b - startColor.b) * ratio);
+                snake[i].color = `rgb(${r},${g},${b})`;
             }
-            // 마지막으로 머리의 위치를 업데이트합니다.
-            snake[0].x = headPosition.x;
-            snake[0].y = headPosition.y;
         }
     }
 
     function didGameEnd() {
-        for (let i = 4; i < snake.length; i++) {
-            if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+        // 자가 충돌
+        if(gameSettings.selfCollision) {
+            for (let i = 4; i < snake.length; i++) {
+                if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+            }
         }
-        const hitLeftWall = snake[0].x < 0;
-        const hitRightWall = snake[0].x * gridSize >= canvas.width;
-        const hitTopWall = snake[0].y < 0;
-        const hitBottomWall = snake[0].y * gridSize >= canvas.height;
-        return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
-    }
-
-    function changeDirection(event) {
-        const LEFT_KEY = 37;
-        const RIGHT_KEY = 39;
-        const UP_KEY = 38;
-        const DOWN_KEY = 40;
-
-        if (changingDirection) return;
-        changingDirection = true;
-
-        const keyPressed = event.keyCode;
-        const goingUp = dy === -1;
-        const goingDown = dy === 1;
-        const goingRight = dx === 1;
-        const goingLeft = dx === -1;
-
-        if (keyPressed === LEFT_KEY && !goingRight) { dx = -1; dy = 0; }
-        if (keyPressed === UP_KEY && !goingDown) { dx = 0; dy = -1; }
-        if (keyPressed === RIGHT_KEY && !goingLeft) { dx = 1; dy = 0; }
-        if (keyPressed === DOWN_KEY && !goingUp) { dx = 0; dy = 1; }
+        // 벽 충돌 (wrap-around가 아닐 때)
+        if (gameSettings.wallBehavior === 'gameOver') {
+            const cols = Math.floor(canvas.width / gameSettings.gridSize);
+            const rows = Math.floor(canvas.height / gameSettings.gridSize);
+            const hitWall = snake[0].x < 0 || snake[0].x >= cols || snake[0].y < 0 || snake[0].y >= rows;
+            if(hitWall) return true;
+        }
+        return false;
     }
 
     function gameLoop() {
+        if (!gameRunning) return;
+        
         if (didGameEnd()) {
             stopGame();
-            window.showGameOver("Game Over!", `Score: ${score}`);
+            globalScope.showGameOver("Game Over!", `Score: ${score}`);
             return;
         }
-
+        
         changingDirection = false;
-        setTimeout(function() {
+        gameLoopTimeout = setTimeout(function() {
             advanceSnake();
             draw();
+            gameInfo.textContent = `Snake Game | Score: ${score}`;
             animationFrameId = requestAnimationFrame(gameLoop);
-        }, gameSpeed);
+        }, gameSettings.snakeSpeed);
     }
 
-    function startGame(settings = {}) {
-        if (!gameRunning) {
-            gameSpeed = settings.snakeSpeed || 100;
-            gridSize = settings.gridSize || 20;
-            const initialLength = settings.initialLength || 3;
-            
-            snake = [];
-            for (let i = 0; i < initialLength; i++) {
-                snake.push({
-                    x: 10 - i,
-                    y: 10,
-                    color: generateRandomBrightColor()
-                });
-            }
-            dx = 1;
-            dy = 0;
-            score = 0;
-            generateFood();
+    function startGame(settings) {
+        if (gameRunning) return;
+        gameRunning = true;
+        gameSettings = settings;
 
-            gameRunning = true;
-            gameInfo.textContent = "Snake Game: Starting...";
-            gameLoop();
+        snake = [];
+        const startX = Math.floor((canvas.width / gameSettings.gridSize) / 2);
+        const startY = Math.floor((canvas.height / gameSettings.gridSize) / 2);
+        for (let i = 0; i < gameSettings.initialLength; i++) {
+            snake.push({ x: startX - i, y: startY, color: '#FFFFFF' });
         }
+        
+        dx = 1; dy = 0;
+        score = 0;
+        generateFood();
+        updateSnakeColors();
+
+        gameInfo.textContent = "Snake Game: Starting...";
+        gameLoop();
     }
 
     function stopGame() {
         gameRunning = false;
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
+        animationFrameId = null;
+        gameLoopTimeout = null;
     }
 
-    return {
-        startGame: startGame,
-        stopGame: stopGame
-    };
+    return { startGame, stopGame };
 };
