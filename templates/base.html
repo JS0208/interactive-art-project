@@ -1,165 +1,549 @@
 <!doctype html>
-<html lang="en" class="theme-modern-clarity">
+<html lang="ko" class="theme-modernist-ink">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Interactive Art{% endblock %}</title>
+    <title>{% block title %}인터랙티브 아트{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
         @layer base {
-            /* Theme Definitions */
+            /* * =================================================================
+             * 30개의 새로운 테마 정의
+             * =================================================================
+             */
 
-            /* 1. Modern Clarity */
-            .theme-modern-clarity {
-                --color-bg-primary: #F8F9FA;
-                --color-text-primary: #212529;
+            /* 1. 모더니스트 잉크 (Modernist Ink) */
+            .theme-modernist-ink {
+                --color-bg-primary: #F4F4F4;
+                --color-text-primary: #1A1A1A;
                 --color-card-bg: #FFFFFF;
-                --color-card-shadow: #DEE2E6;
+                --color-card-shadow: #D1D1D1;
                 --color-nav-bg: #FFFFFF;
-                --color-nav-text: #495057;
-                --color-nav-hover-text: #0D6EFD;
-                --color-btn-primary-bg: #0D6EFD;
-                --color-btn-primary-hover-bg: #0B5ED7;
+                --color-nav-text: #333333;
+                --color-nav-hover-text: #E53935;
+                --color-btn-primary-bg: #1A1A1A;
+                --color-btn-primary-hover-bg: #333333;
                 --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #6C757D;
-                --color-btn-secondary-hover-bg: #5C636A;
-                --color-btn-secondary-text: #FFFFFF;
+                --color-btn-secondary-bg: #E0E0E0;
+                --color-btn-secondary-hover-bg: #BDBDBD;
+                --color-btn-secondary-text: #1A1A1A;
             }
 
-            /* 2. Midnight Focus */
-            .theme-midnight-focus {
-                --color-bg-primary: #121212;
+            /* 2. 갈라틱 보이드 (Galactic Void) */
+            .theme-galactic-void {
+                --color-bg-primary: #0D0C1D;
                 --color-text-primary: #E0E0E0;
-                --color-card-bg: #1E1E1E;
-                --color-card-shadow: #2C2C2C;
-                --color-nav-bg: #1E1E1E;
-                --color-nav-text: #E0E0E0;
-                --color-nav-hover-text: #26A69A;
-                --color-btn-primary-bg: #26A69A;
-                --color-btn-primary-hover-bg: #00897B;
-                --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #333333;
-                --color-btn-secondary-hover-bg: #424242;
+                --color-card-bg: #16152B;
+                --color-card-shadow: #2A2949;
+                --color-nav-bg: #16152B;
+                --color-nav-text: #A4A3B9;
+                --color-nav-hover-text: #BB86FC;
+                --color-btn-primary-bg: #BB86FC;
+                --color-btn-primary-hover-bg: #A162F8;
+                --color-btn-primary-text: #0D0C1D;
+                --color-btn-secondary-bg: #2A2949;
+                --color-btn-secondary-hover-bg: #3C3B62;
                 --color-btn-secondary-text: #E0E0E0;
             }
 
-            /* 3. Serene Forest */
-            .theme-serene-forest {
-                --color-bg-primary: #F5F5DC;
-                --color-text-primary: #3D403A;
+            /* 3. 오션 브리즈 (Ocean Breeze) */
+            .theme-ocean-breeze {
+                --color-bg-primary: #E0F7FA;
+                --color-text-primary: #004D40;
                 --color-card-bg: #FFFFFF;
-                --color-card-shadow: #D2D2C0;
+                --color-card-shadow: #B2EBF2;
                 --color-nav-bg: #FFFFFF;
-                --color-nav-text: #5A6D55;
-                --color-nav-hover-text: #4CAF50;
-                --color-btn-primary-bg: #4CAF50;
-                --color-btn-primary-hover-bg: #45A049;
+                --color-nav-text: #00796B;
+                --color-nav-hover-text: #004D40;
+                --color-btn-primary-bg: #00796B;
+                --color-btn-primary-hover-bg: #004D40;
                 --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #A9A9A9;
-                --color-btn-secondary-hover-bg: #8B8B8B;
+                --color-btn-secondary-bg: #B2EBF2;
+                --color-btn-secondary-hover-bg: #80DEEA;
+                --color-btn-secondary-text: #004D40;
+            }
+
+            /* 4. 어텀 엠버 (Autumn Ember) */
+            .theme-autumn-ember {
+                --color-bg-primary: #FFF3E0;
+                --color-text-primary: #4E342E;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #FFCC80;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #BF360C;
+                --color-nav-hover-text: #D84315;
+                --color-btn-primary-bg: #FF7043;
+                --color-btn-primary-hover-bg: #F4511E;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #FFCC80;
+                --color-btn-secondary-hover-bg: #FFB74D;
+                --color-btn-secondary-text: #4E342E;
+            }
+
+            /* 5. 네온 펑크 (Neon Punk) */
+            .theme-neon-punk {
+                --color-bg-primary: #1A1A2E;
+                --color-text-primary: #F0F0F0;
+                --color-card-bg: #16213E;
+                --color-card-shadow: #0F3460;
+                --color-nav-bg: #16213E;
+                --color-nav-text: #E94560;
+                --color-nav-hover-text: #00FFFF;
+                --color-btn-primary-bg: #E94560;
+                --color-btn-primary-hover-bg: #D42D4C;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #0F3460;
+                --color-btn-secondary-hover-bg: #1A4A8A;
+                --color-btn-secondary-text: #F0F0F0;
+            }
+
+            /* 6. 클래식 아이보리 (Classic Ivory) */
+            .theme-classic-ivory {
+                --color-bg-primary: #FAF3E0;
+                --color-text-primary: #5C524A;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #DCD3C4;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #8E7A6B;
+                --color-nav-hover-text: #5D4037;
+                --color-btn-primary-bg: #BCAAA4;
+                --color-btn-primary-hover-bg: #A1887F;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #EFEBE9;
+                --color-btn-secondary-hover-bg: #D7CCC8;
+                --color-btn-secondary-text: #5C524A;
+            }
+
+            /* 7. 에메랄드 나이트 (Emerald Night) */
+            .theme-emerald-night {
+                --color-bg-primary: #001514;
+                --color-text-primary: #D4D4D4;
+                --color-card-bg: #002B29;
+                --color-card-shadow: #004240;
+                --color-nav-bg: #002B29;
+                --color-nav-text: #A3D9D2;
+                --color-nav-hover-text: #50C878;
+                --color-btn-primary-bg: #50C878;
+                --color-btn-primary-hover-bg: #40A060;
+                --color-btn-primary-text: #001514;
+                --color-btn-secondary-bg: #004240;
+                --color-btn-secondary-hover-bg: #005A58;
+                --color-btn-secondary-text: #D4D4D4;
+            }
+
+            /* 8. 코튼 캔디 (Cotton Candy) */
+            .theme-cotton-candy {
+                --color-bg-primary: #FCE4EC;
+                --color-text-primary: #880E4F;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #F8BBD0;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #EC407A;
+                --color-nav-hover-text: #D81B60;
+                --color-btn-primary-bg: #EC407A;
+                --color-btn-primary-hover-bg: #D81B60;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #F8BBD0;
+                --color-btn-secondary-hover-bg: #F48FB1;
+                --color-btn-secondary-text: #880E4F;
+            }
+
+            /* 9. 스팀펑크 브라스 (Steampunk Brass) */
+            .theme-steampunk-brass {
+                --color-bg-primary: #5E4A3A;
+                --color-text-primary: #F2E5D5;
+                --color-card-bg: #8B6F4E;
+                --color-card-shadow: #4A3A2A;
+                --color-nav-bg: #8B6F4E;
+                --color-nav-text: #F2E5D5;
+                --color-nav-hover-text: #D4AF37;
+                --color-btn-primary-bg: #D4AF37;
+                --color-btn-primary-hover-bg: #C09E31;
+                --color-btn-primary-text: #4A3A2A;
+                --color-btn-secondary-bg: #5E4A3A;
+                --color-btn-secondary-hover-bg: #4A3A2A;
+                --color-btn-secondary-text: #F2E5D5;
+            }
+            
+            /* 10. 라벤더 필드 (Lavender Fields) */
+            .theme-lavender-fields {
+                --color-bg-primary: #F3E5F5;
+                --color-text-primary: #4A148C;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #E1BEE7;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #8E24AA;
+                --color-nav-hover-text: #6A1B9A;
+                --color-btn-primary-bg: #AB47BC;
+                --color-btn-primary-hover-bg: #8E24AA;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #E1BEE7;
+                --color-btn-secondary-hover-bg: #CE93D8;
+                --color-btn-secondary-text: #4A148C;
+            }
+
+            /* 11. 솔라 플레어 (Solar Flare) */
+            .theme-solar-flare {
+                --color-bg-primary: #1B1B1B;
+                --color-text-primary: #FFFFFF;
+                --color-card-bg: #2C2C2C;
+                --color-card-shadow: #444444;
+                --color-nav-bg: #2C2C2C;
+                --color-nav-text: #FFCA28;
+                --color-nav-hover-text: #FFA000;
+                --color-btn-primary-bg: #FFB300;
+                --color-btn-primary-hover-bg: #FFA000;
+                --color-btn-primary-text: #1B1B1B;
+                --color-btn-secondary-bg: #424242;
+                --color-btn-secondary-hover-bg: #616161;
                 --color-btn-secondary-text: #FFFFFF;
             }
 
-            /* 4. Sunset Horizon */
-            .theme-sunset-horizon {
+            /* 12. 민티 프레시 (Minty Fresh) */
+            .theme-minty-fresh {
+                --color-bg-primary: #E8F5E9;
+                --color-text-primary: #1B5E20;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #C8E6C9;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #388E3C;
+                --color-nav-hover-text: #2E7D32;
+                --color-btn-primary-bg: #66BB6A;
+                --color-btn-primary-hover-bg: #4CAF50;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #A5D6A7;
+                --color-btn-secondary-hover-bg: #81C784;
+                --color-btn-secondary-text: #1B5E20;
+            }
+
+            /* 13. 크림슨 섀도우 (Crimson Shadow) */
+            .theme-crimson-shadow {
+                --color-bg-primary: #260A0A;
+                --color-text-primary: #F5EAEA;
+                --color-card-bg: #4C1515;
+                --color-card-shadow: #722020;
+                --color-nav-bg: #4C1515;
+                --color-nav-text: #E57373;
+                --color-nav-hover-text: #F44336;
+                --color-btn-primary-bg: #D32F2F;
+                --color-btn-primary-hover-bg: #B71C1C;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #722020;
+                --color-btn-secondary-hover-bg: #882626;
+                --color-btn-secondary-text: #F5EAEA;
+            }
+
+            /* 14. 데저트 샌즈 (Desert Sands) */
+            .theme-desert-sands {
+                --color-bg-primary: #F0EAD6;
+                --color-text-primary: #705446;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #D7C7B4;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #A67B5B;
+                --color-nav-hover-text: #8C5E4A;
+                --color-btn-primary-bg: #C6A582;
+                --color-btn-primary-hover-bg: #AF8C6D;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #E4D5C2;
+                --color-btn-secondary-hover-bg: #D7C7B4;
+                --color-btn-secondary-text: #705446;
+            }
+
+            /* 15. 레트로 그루브 (Retro Groove) */
+            .theme-retro-groove {
+                --color-bg-primary: #E1D8C9;
+                --color-text-primary: #3D2C2A;
+                --color-card-bg: #F7F0E5;
+                --color-card-shadow: #C1B4A3;
+                --color-nav-bg: #F7F0E5;
+                --color-nav-text: #D47A6A;
+                --color-nav-hover-text: #A85C51;
+                --color-btn-primary-bg: #EF9A54;
+                --color-btn-primary-hover-bg: #D47A6A;
+                --color-btn-primary-text: #3D2C2A;
+                --color-btn-secondary-bg: #6DAE81;
+                --color-btn-secondary-hover-bg: #5A936C;
+                --color-btn-secondary-text: #F7F0E5;
+            }
+            
+            /* 16. 옵시디언 코드 (Obsidian Code) */
+            .theme-obsidian-code {
+                --color-bg-primary: #0B0C10;
+                --color-text-primary: #C5C6C7;
+                --color-card-bg: #1F2833;
+                --color-card-shadow: #45A29E;
+                --color-nav-bg: #1F2833;
+                --color-nav-text: #66FCF1;
+                --color-nav-hover-text: #45A29E;
+                --color-btn-primary-bg: #66FCF1;
+                --color-btn-primary-hover-bg: #45A29E;
+                --color-btn-primary-text: #0B0C10;
+                --color-btn-secondary-bg: #C5C6C7;
+                --color-btn-secondary-hover-bg: #A8A9AA;
+                --color-btn-secondary-text: #1F2833;
+            }
+
+            /* 17. 피치 킨 (Peachy Keen) */
+            .theme-peachy-keen {
+                --color-bg-primary: #FFF0E5;
+                --color-text-primary: #7D411D;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #FFDAB9;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #FF8A65;
+                --color-nav-hover-text: #FF7043;
+                --color-btn-primary-bg: #FF8A65;
+                --color-btn-primary-hover-bg: #FF7043;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #FFCCBC;
+                --color-btn-secondary-hover-bg: #FFAB91;
+                --color-btn-secondary-text: #7D411D;
+            }
+
+            /* 18. 정글 카노피 (Jungle Canopy) */
+            .theme-jungle-canopy {
+                --color-bg-primary: #2F4F4F;
+                --color-text-primary: #F5F5F5;
+                --color-card-bg: #3E5F5F;
+                --color-card-shadow: #5A7F7F;
+                --color-nav-bg: #3E5F5F;
+                --color-nav-text: #90EE90;
+                --color-nav-hover-text: #3CB371;
+                --color-btn-primary-bg: #2E8B57;
+                --color-btn-primary-hover-bg: #3CB371;
+                --color-btn-primary-text: #F5F5F5;
+                --color-btn-secondary-bg: #8FBC8F;
+                --color-btn-secondary-hover-bg: #6B8E6B;
+                --color-btn-secondary-text: #2F4F4F;
+            }
+            
+            /* 19. 로즈 골드 (Rose Gold) */
+            .theme-rose-gold {
+                --color-bg-primary: #F7F0F0;
+                --color-text-primary: #5C3A3A;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #E6CFCF;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #B76E79;
+                --color-nav-hover-text: #A25661;
+                --color-btn-primary-bg: #D9A9A9;
+                --color-btn-primary-hover-bg: #C89090;
+                --color-btn-primary-text: #5C3A3A;
+                --color-btn-secondary-bg: #F5E3E3;
+                --color-btn-secondary-hover-bg: #E6CFCF;
+                --color-btn-secondary-text: #5C3A3A;
+            }
+
+            /* 20. 팝 아트 (Pop Art) */
+            .theme-pop-art {
+                --color-bg-primary: #FDF200;
+                --color-text-primary: #000000;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #00AEEF;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #EC008C;
+                --color-nav-hover-text: #00AEEF;
+                --color-btn-primary-bg: #EC008C;
+                --color-btn-primary-hover-bg: #C10072;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #00AEEF;
+                --color-btn-secondary-hover-bg: #008CBD;
+                --color-btn-secondary-text: #FFFFFF;
+            }
+
+            /* 21. 알파인 스노우 (Alpine Snow) */
+            .theme-alpine-snow {
+                --color-bg-primary: #F5F7FA;
+                --color-text-primary: #4A4A4A;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #DDE2E6;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #3273DC;
+                --color-nav-hover-text: #235BAA;
+                --color-btn-primary-bg: #3273DC;
+                --color-btn-primary-hover-bg: #235BAA;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #F0F2F5;
+                --color-btn-secondary-hover-bg: #E5E9ED;
+                --color-btn-secondary-text: #4A4A4A;
+            }
+
+            /* 22. 마션 선셋 (Martian Sunset) */
+            .theme-martian-sunset {
+                --color-bg-primary: #3E2723;
+                --color-text-primary: #FFCCBC;
+                --color-card-bg: #4E342E;
+                --color-card-shadow: #6D4C41;
+                --color-nav-bg: #4E342E;
+                --color-nav-text: #FFAB91;
+                --color-nav-hover-text: #FF8A65;
+                --color-btn-primary-bg: #BF360C;
+                --color-btn-primary-hover-bg: #A62C0A;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #6D4C41;
+                --color-btn-secondary-hover-bg: #5D4037;
+                --color-btn-secondary-text: #FFCCBC;
+            }
+
+            /* 23. 코랄 리프 (Coral Reef) */
+            .theme-coral-reef {
+                --color-bg-primary: #F0FFFF;
+                --color-text-primary: #005F5F;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #AFEEEE;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #FF7F50;
+                --color-nav-hover-text: #FF6347;
+                --color-btn-primary-bg: #FF7F50;
+                --color-btn-primary-hover-bg: #FF6347;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #40E0D0;
+                --color-btn-secondary-hover-bg: #20B2AA;
+                --color-btn-secondary-text: #005F5F;
+            }
+
+            /* 24. 플래티넘 그레이 (Platinum Gray) */
+            .theme-platinum-gray {
+                --color-bg-primary: #E5E4E2;
+                --color-text-primary: #2C2C2C;
+                --color-card-bg: #F5F5F5;
+                --color-card-shadow: #C0C0C0;
+                --color-nav-bg: #F5F5F5;
+                --color-nav-text: #555555;
+                --color-nav-hover-text: #000000;
+                --color-btn-primary-bg: #708090;
+                --color-btn-primary-hover-bg: #5D6D7E;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #D3D3D3;
+                --color-btn-secondary-hover-bg: #BEBEBE;
+                --color-btn-secondary-text: #2C2C2C;
+            }
+
+            /* 25. 그래피티 월 (Graffiti Wall) */
+            .theme-graffiti-wall {
+                --color-bg-primary: #4A4A4A;
+                --color-text-primary: #FFFFFF;
+                --color-card-bg: #616161;
+                --color-card-shadow: #333333;
+                --color-nav-bg: #616161;
+                --color-nav-text: #F7DC6F;
+                --color-nav-hover-text: #F4D03F;
+                --color-btn-primary-bg: #3498DB;
+                --color-btn-primary-hover-bg: #2980B9;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #E74C3C;
+                --color-btn-secondary-hover-bg: #C0392B;
+                --color-btn-secondary-text: #FFFFFF;
+            }
+
+            /* 26. 레몬 제스트 (Lemon Zest) */
+            .theme-lemon-zest {
+                --color-bg-primary: #FFFDE7;
+                --color-text-primary: #3E2723;
+                --color-card-bg: #FFFFFF;
+                --color-card-shadow: #FFF59D;
+                --color-nav-bg: #FFFFFF;
+                --color-nav-text: #FBC02D;
+                --color-nav-hover-text: #F9A825;
+                --color-btn-primary-bg: #FFEE58;
+                --color-btn-primary-hover-bg: #FDD835;
+                --color-btn-primary-text: #3E2723;
+                --color-btn-secondary-bg: #FFF9C4;
+                --color-btn-secondary-hover-bg: #FFF59D;
+                --color-btn-secondary-text: #3E2723;
+            }
+
+            /* 27. 아틀란티스 뎁스 (Atlantis Depths) */
+            .theme-atlantis-depths {
+                --color-bg-primary: #002333;
+                --color-text-primary: #BEE2F0;
+                --color-card-bg: #00344D;
+                --color-card-shadow: #004566;
+                --color-nav-bg: #00344D;
+                --color-nav-text: #38B6FF;
+                --color-nav-hover-text: #66CCFF;
+                --color-btn-primary-bg: #00A6FF;
+                --color-btn-primary-hover-bg: #0085CC;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #004566;
+                --color-btn-secondary-hover-bg: #005680;
+                --color-btn-secondary-text: #BEE2F0;
+            }
+
+            /* 28. 레드우드 포레스트 (Redwood Forest) */
+            .theme-redwood-forest {
+                --color-bg-primary: #3B2E2A;
+                --color-text-primary: #EDEAE8;
+                --color-card-bg: #5A4B46;
+                --color-card-shadow: #2C211D;
+                --color-nav-bg: #5A4B46;
+                --color-nav-text: #B08A78;
+                --color-nav-hover-text: #C9A694;
+                --color-btn-primary-bg: #8C5E4A;
+                --color-btn-primary-hover-bg: #784F3E;
+                --color-btn-primary-text: #EDEAE8;
+                --color-btn-secondary-bg: #70605A;
+                --color-btn-secondary-hover-bg: #5A4B46;
+                --color-btn-secondary-text: #EDEAE8;
+            }
+
+            /* 29. 로얄 퍼플 (Royal Purple) */
+            .theme-royal-purple {
+                --color-bg-primary: #2C1F3D;
+                --color-text-primary: #E9E4F0;
+                --color-card-bg: #3D2C52;
+                --color-card-shadow: #4E3967;
+                --color-nav-bg: #3D2C52;
+                --color-nav-text: #C0A5F0;
+                --color-nav-hover-text: #9D79DE;
+                --color-btn-primary-bg: #8A5AC5;
+                --color-btn-primary-hover-bg: #7148A9;
+                --color-btn-primary-text: #FFFFFF;
+                --color-btn-secondary-bg: #4E3967;
+                --color-btn-secondary-hover-bg: #5F467A;
+                --color-btn-secondary-text: #E9E4F0;
+            }
+
+            /* 30. 미드나잇 슬레이트 (Midnight Slate) */
+            .theme-midnight-slate {
                 --color-bg-primary: #2C3E50;
                 --color-text-primary: #ECF0F1;
                 --color-card-bg: #34495E;
                 --color-card-shadow: #46627F;
                 --color-nav-bg: #34495E;
-                --color-nav-text: #ECF0F1;
-                --color-nav-hover-text: #E67E22;
-                --color-btn-primary-bg: #E67E22;
-                --color-btn-primary-hover-bg: #D35400;
+                --color-nav-text: #BDC3C7;
+                --color-nav-hover-text: #FFFFFF;
+                --color-btn-primary-bg: #3498DB;
+                --color-btn-primary-hover-bg: #2980B9;
                 --color-btn-primary-text: #FFFFFF;
                 --color-btn-secondary-bg: #95A5A6;
                 --color-btn-secondary-hover-bg: #7F8C8D;
                 --color-btn-secondary-text: #2C3E50;
             }
+            
 
-            /* 5. Vintage Paper */
-            .theme-vintage-paper {
-                --color-bg-primary: #FDF6E3;
-                --color-text-primary: #584B3A;
-                --color-card-bg: #FBFBFB;
-                --color-card-shadow: #EAE3D4;
-                --color-nav-bg: #FBFBFB;
-                --color-nav-text: #657B83;
-                --color-nav-hover-text: #8B0000;
-                --color-btn-primary-bg: #8B0000;
-                --color-btn-primary-hover-bg: #A52A2A;
-                --color-btn-primary-text: #FDF6E3;
-                --color-btn-secondary-bg: #D2B48C;
-                --color-btn-secondary-hover-bg: #BC8F8F;
-                --color-btn-secondary-text: #584B3A;
-            }
-
-            /* 6. Lavender Dream */
-            .theme-lavender-dream {
-                --color-bg-primary: #E6E6FA;
-                --color-text-primary: #483D8B;
-                --color-card-bg: #FFFFFF;
-                --color-card-shadow: #D8BFD8;
-                --color-nav-bg: #FFFFFF;
-                --color-nav-text: #6A5ACD;
-                --color-nav-hover-text: #8A2BE2;
-                --color-btn-primary-bg: #9370DB;
-                --color-btn-primary-hover-bg: #8A2BE2;
-                --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #D8BFD8;
-                --color-btn-secondary-hover-bg: #BA55D3;
-                --color-btn-secondary-text: #483D8B;
-            }
-
-            /* 7. Corporate Blue */
-            .theme-corporate-blue {
-                --color-bg-primary: #EFF2F5;
-                --color-text-primary: #343A40;
-                --color-card-bg: #FFFFFF;
-                --color-card-shadow: #CED4DA;
-                --color-nav-bg: #FFFFFF;
-                --color-nav-text: #0056B3;
-                --color-nav-hover-text: #004085;
-                --color-btn-primary-bg: #007BFF;
-                --color-btn-primary-hover-bg: #0069D9;
-                --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #E9ECEF;
-                --color-btn-secondary-hover-bg: #DAE0E5;
-                --color-btn-secondary-text: #343A40;
-            }
-
-            /* 8. Cyber Tech */
-            .theme-cyber-tech {
-                --color-bg-primary: #0A0A1A;
-                --color-text-primary: #CED4DA;
-                --color-card-bg: #1A1A2A;
-                --color-card-shadow: #343A40;
-                --color-nav-bg: #1A1A2A;
-                --color-nav-text: #CED4DA;
-                --color-nav-hover-text: #FF00FF;
-                --color-btn-primary-bg: #FF00FF;
-                --color-btn-primary-hover-bg: #CC00CC;
-                --color-btn-primary-text: #FFFFFF;
-                --color-btn-secondary-bg: #343A40;
-                --color-btn-secondary-hover-bg: #495057;
-                --color-btn-secondary-text: #CED4DA;
-            }
-
-            /* Apply variables */
+            /* * =================================================================
+             * 변수 적용
+             * =================================================================
+             */
             body {
                 background-color: var(--color-bg-primary);
                 color: var(--color-text-primary);
+                transition: background-color 0.3s ease, color 0.3s ease;
             }
             .card {
                 background-color: var(--color-card-bg);
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* default shadow */
-                border-color: var(--color-card-shadow); /* use shadow color for border */
+                border-color: var(--color-card-shadow);
+                transition: background-color 0.3s ease, border-color 0.3s ease;
             }
             .navbar {
                 background-color: var(--color-nav-bg);
+                transition: background-color 0.3s ease;
             }
             .nav-link {
                 color: var(--color-nav-text);
+                transition: color 0.3s ease;
             }
             .nav-link:hover {
                 color: var(--color-nav-hover-text);
@@ -167,6 +551,7 @@
             .btn-primary {
                 background-color: var(--color-btn-primary-bg);
                 color: var(--color-btn-primary-text);
+                transition: background-color 0.3s ease, color 0.3s ease;
             }
             .btn-primary:hover {
                 background-color: var(--color-btn-primary-hover-bg);
@@ -174,6 +559,7 @@
             .btn-secondary {
                 background-color: var(--color-btn-secondary-bg);
                 color: var(--color-btn-secondary-text);
+                transition: background-color 0.3s ease, color 0.3s ease;
             }
             .btn-secondary:hover {
                 background-color: var(--color-btn-secondary-hover-bg);
@@ -184,25 +570,20 @@
 <body class="bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans leading-normal tracking-normal">
     <nav class="navbar p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <a class="text-white text-3xl font-extrabold tracking-tight" href="/">Interactive Art</a>
+            <a class="text-2xl font-bold tracking-tight nav-link" href="/">Interactive Art</a>
             <div class="flex items-center space-x-6">
                 <a class="nav-link text-lg transition-colors duration-200" href="/">Home</a>
                 <a class="nav-link text-lg transition-colors duration-200" href="/projects">Projects</a>
                 <div class="relative inline-block text-left">
                     <button id="theme-dropdown-button" type="button" class="nav-link text-lg focus:outline-none flex items-center" aria-expanded="true" aria-haspopup="true">
                         Theme
-                        <svg class="-mr-1 ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.042-8.67l-.707-.707M10.95 18.67l-.707.707m8.67-8.042l.707-.707M18.67 10.95l.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
+                        <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
                     </button>
-                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" style="z-index: 50;" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
+                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-[var(--color-card-bg)] ring-1 ring-black ring-opacity-5 focus:outline-none hidden max-h-96 overflow-y-auto" style="z-index: 50;" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
                         <div class="py-1" role="none">
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-modern-clarity">Modern Clarity</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-midnight-focus">Midnight Focus</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-serene-forest">Serene Forest</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-sunset-horizon">Sunset Horizon</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-vintage-paper">Vintage Paper</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-lavender-dream">Lavender Dream</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-corporate-blue">Corporate Blue</button>
-                            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-cyber-tech">Cyber Tech</button>
+                            <!-- 테마 버튼들은 스크립트로 동적 생성됩니다. -->
                         </div>
                     </div>
                 </div>
@@ -218,70 +599,122 @@
         const htmlElement = document.documentElement;
         const themeDropdownButton = document.getElementById('theme-dropdown-button');
         const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+        const themeMenuContainer = themeDropdownMenu.querySelector('.py-1');
 
-        // Theme mapping for easy access
-        const themes = [
-            'theme-modern-clarity',
-            'theme-midnight-focus',
-            'theme-serene-forest',
-            'theme-sunset-horizon',
-            'theme-vintage-paper',
-            'theme-lavender-dream',
-            'theme-corporate-blue',
-            'theme-cyber-tech'
+        // 테마 이름과 클래스명 매핑
+        const themeData = [
+            { name: '모더니스트 잉크', id: 'theme-modernist-ink' },
+            { name: '갈라틱 보이드', id: 'theme-galactic-void' },
+            { name: '오션 브리즈', id: 'theme-ocean-breeze' },
+            { name: '어텀 엠버', id: 'theme-autumn-ember' },
+            { name: '네온 펑크', id: 'theme-neon-punk' },
+            { name: '클래식 아이보리', id: 'theme-classic-ivory' },
+            { name: '에메랄드 나이트', id: 'theme-emerald-night' },
+            { name: '코튼 캔디', id: 'theme-cotton-candy' },
+            { name: '스팀펑크 브라스', id: 'theme-steampunk-brass' },
+            { name: '라벤더 필드', id: 'theme-lavender-fields' },
+            { name: '솔라 플레어', id: 'theme-solar-flare' },
+            { name: '민티 프레시', id: 'theme-minty-fresh' },
+            { name: '크림슨 섀도우', id: 'theme-crimson-shadow' },
+            { name: '데저트 샌즈', id: 'theme-desert-sands' },
+            { name: '레트로 그루브', id: 'theme-retro-groove' },
+            { name: '옵시디언 코드', id: 'theme-obsidian-code' },
+            { name: '피치 킨', id: 'theme-peachy-keen' },
+            { name: '정글 카노피', id: 'theme-jungle-canopy' },
+            { name: '로즈 골드', id: 'theme-rose-gold' },
+            { name: '팝 아트', id: 'theme-pop-art' },
+            { name: '알파인 스노우', id: 'theme-alpine-snow' },
+            { name: '마션 선셋', id: 'theme-martian-sunset' },
+            { name: '코랄 리프', id: 'theme-coral-reef' },
+            { name: '플래티넘 그레이', id: 'theme-platinum-gray' },
+            { name: '그래피티 월', id: 'theme-graffiti-wall' },
+            { name: '레몬 제스트', id: 'theme-lemon-zest' },
+            { name: '아틀란티스 뎁스', id: 'theme-atlantis-depths' },
+            { name: '레드우드 포레스트', id: 'theme-redwood-forest' },
+            { name: '로얄 퍼플', id: 'theme-royal-purple' },
+            { name: '미드나잇 슬레이트', id: 'theme-midnight-slate' }
         ];
 
-        // Function to apply theme
-        function applyTheme(themeName) {
-            themes.forEach(theme => {
-                htmlElement.classList.remove(theme);
+        const themeIds = themeData.map(t => t.id);
+
+        // 드롭다운 메뉴에 테마 버튼 동적 생성
+        function populateThemeMenu() {
+            themeMenuContainer.innerHTML = ''; // 기존 메뉴 초기화
+            themeData.forEach(theme => {
+                const button = document.createElement('button');
+                button.className = 'block w-full text-left px-4 py-2 text-sm nav-link hover:bg-[var(--color-btn-secondary-hover-bg)]';
+                button.setAttribute('role', 'menuitem');
+                button.setAttribute('tabindex', '-1');
+                button.id = theme.id;
+                button.textContent = theme.name;
+                themeMenuContainer.appendChild(button);
             });
-            htmlElement.classList.add(themeName);
-            localStorage.setItem('theme', themeName);
         }
 
-        // Initialize theme from localStorage or default to Modern Clarity
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme && themes.includes(savedTheme)) {
-            applyTheme(savedTheme);
-        } else {
-            applyTheme('theme-modern-clarity'); // Default theme
+        // 테마 적용 함수
+        function applyTheme(themeId) {
+            // 모든 테마 클래스 제거
+            htmlElement.className = htmlElement.className.replace(/\btheme-[a-z-]+\b/g, '');
+            // 새 테마 클래스 추가
+            htmlElement.classList.add(themeId);
+            localStorage.setItem('theme', themeId);
         }
 
-        // Toggle dropdown visibility
+        // 페이지 로드 시 초기화
+        function initializeTheme() {
+            populateThemeMenu();
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme && themeIds.includes(savedTheme)) {
+                applyTheme(savedTheme);
+            } else {
+                applyTheme(themeIds[0]); // 기본 테마
+            }
+        }
+
+        // 드롭다운 토글
         themeDropdownButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent click from immediately closing dropdown
+            event.stopPropagation();
             themeDropdownMenu.classList.toggle('hidden');
         });
 
-        // Hide dropdown when clicking outside
+        // 외부 클릭 시 드롭다운 숨기기
         window.addEventListener('click', (event) => {
             if (!themeDropdownButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
                 themeDropdownMenu.classList.add('hidden');
             }
         });
 
-        // Add event listeners for each theme button
-        themes.forEach(themeName => {
-            const button = document.getElementById(themeName);
+        // 드롭다운 메뉴의 버튼에 이벤트 리스너 추가 (이벤트 위임)
+        themeMenuContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
             if (button) {
-                button.addEventListener('click', () => {
-                    applyTheme(themeName);
+                const themeId = button.id;
+                if (themeIds.includes(themeId)) {
+                    applyTheme(themeId);
                     themeDropdownMenu.classList.add('hidden');
-                });
+                }
             }
         });
 
-        // Spacebar to randomize theme
+        // 스페이스바로 무작위 테마 변경
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName.toLowerCase() === 'input') return;
+            // input, textarea 등 텍스트 입력 필드에서는 작동하지 않도록 함
+            if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'textarea') return;
 
             if (e.key === ' ') {
                 e.preventDefault();
-                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-                applyTheme(randomTheme);
+                const currentTheme = localStorage.getItem('theme') || themeIds[0];
+                let randomThemeId;
+                do {
+                    randomThemeId = themeIds[Math.floor(Math.random() * themeIds.length)];
+                } while (randomThemeId === currentTheme); // 현재 테마와 다른 테마가 나올 때까지 반복
+                
+                applyTheme(randomThemeId);
             }
         });
+
+        // 초기화 함수 실행
+        initializeTheme();
     </script>
 </body>
 </html>
