@@ -180,6 +180,31 @@
                 }
             }
         }
+        
+        // --- NEW: 파라미터 입력 활성화/비활성화 함수 ---
+        function disableParameterInputs() {
+            if (currentParams) {
+                for (const key in currentParams) {
+                    if (currentParams[key].element) {
+                        currentParams[key].element.disabled = true;
+                    }
+                }
+                if (resetParamsBtn) resetParamsBtn.disabled = true;
+                if (randomizeParamsBtn) randomizeParamsBtn.disabled = true;
+            }
+        }
+
+        function enableParameterInputs() {
+            if (currentParams) {
+                for (const key in currentParams) {
+                    if (currentParams[key].element) {
+                        currentParams[key].element.disabled = false;
+                    }
+                }
+                if (resetParamsBtn) resetParamsBtn.disabled = false;
+                if (randomizeParamsBtn) randomizeParamsBtn.disabled = false;
+            }
+        }
 
         // --- 파라미터 버튼 이벤트 리스너 ---
         if (resetParamsBtn) {
@@ -221,6 +246,7 @@
             gameOverOverlay.classList.remove('hidden');
             startGameBtn.disabled = false;
             document.body.classList.remove('overflow-hidden');
+            enableParameterInputs(); // MODIFIED: 파라미터 활성화
             document.addEventListener('keydown', function restartOnR(e) {
                 if (e.key === 'r' || e.key === 'R') {
                     restartGameBtn.click();
@@ -258,30 +284,23 @@
             return settings;
         }
 
+        // --- 공통 게임 시작 함수 ---
+        function handleStartGame() {
+            hideGameOver();
+            if (gameModule && typeof gameModule.startGame === 'function') {
+                disableParameterInputs(); // MODIFIED: 파라미터 비활성화
+                gameModule.startGame(getGameSettings());
+                startGameBtn.disabled = true;
+                canvas.focus();
+                document.body.classList.add('overflow-hidden');
+            } else {
+                gameInfo.textContent = "Game not ready or start function missing.";
+            }
+        }
+        
         // --- 게임 시작/재시작 버튼 이벤트 리스너 ---
-        startGameBtn.addEventListener('click', () => {
-            hideGameOver();
-            if (gameModule && typeof gameModule.startGame === 'function') {
-                gameModule.startGame(getGameSettings());
-                startGameBtn.disabled = true;
-                canvas.focus();
-                document.body.classList.add('overflow-hidden');
-            } else {
-                gameInfo.textContent = "Game not ready or start function missing.";
-            }
-        });
-
-        restartGameBtn.addEventListener('click', () => {
-            hideGameOver();
-            if (gameModule && typeof gameModule.startGame === 'function') {
-                gameModule.startGame(getGameSettings());
-                startGameBtn.disabled = true;
-                canvas.focus();
-                document.body.classList.add('overflow-hidden');
-            } else {
-                gameInfo.textContent = "Game not ready or start function missing.";
-            }
-        });
+        startGameBtn.addEventListener('click', handleStartGame);
+        restartGameBtn.addEventListener('click', handleStartGame);
         
         // --- 캔버스 포커스 시 스크롤 방지 ---
         canvas.addEventListener('keydown', function(e) {
