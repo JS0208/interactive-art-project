@@ -11,27 +11,17 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
     let gameSpeed; // Will be set by settings
 
     // --- 색상 생성 헬퍼 함수 ---
-
-    /**
-     * 밝은 무채색(회색)을 랜덤하게 생성합니다.
-     * @returns {string} CSS rgb 색상 문자열 (예: 'rgb(220, 220, 220)')
-     */
     function generateRandomBrightGray() {
         const value = Math.floor(Math.random() * 86) + 170; // 170 ~ 255 사이의 값
         return `rgb(${value}, ${value}, ${value})`;
     }
 
-    /**
-     * 밝은 유채색을 HSL 색 공간을 사용하여 랜덤하게 생성합니다.
-     * @returns {string} CSS hsl 색상 문자열 (예: 'hsl(120, 100%, 70%)')
-     */
     function generateRandomBrightColor() {
         const hue = Math.floor(Math.random() * 360); // 0 ~ 359 색상
         const saturation = 100; // 100% 채도
         const lightness = 70; // 70% 명도
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
-
 
     // Event listeners for snake movement
     document.addEventListener("keydown", changeDirection);
@@ -51,98 +41,81 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
         if (!x1 || !y1) {
             return;
         }
-
         let x2 = event.touches[0].clientX;
         let y2 = event.touches[0].clientY;
-
         let xDiff = x2 - x1;
         let yDiff = y2 - y1;
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            // Most significant movement is horizontal
             if (xDiff > 0) {
-                // Right swipe
-                if (dx === 0) { // Only change if not already moving horizontally
-                    dx = 1;
-                    dy = 0;
-                }
+                if (dx === 0) { dx = 1; dy = 0; }
             } else {
-                // Left swipe
-                if (dx === 0) {
-                    dx = -1;
-                    dy = 0;
-                }
+                if (dx === 0) { dx = -1; dy = 0; }
             }
         } else {
-            // Most significant movement is vertical
             if (yDiff > 0) {
-                // Down swipe
-                if (dy === 0) {
-                    dx = 0;
-                    dy = 1;
-                }
+                if (dy === 0) { dx = 0; dy = 1; }
             } else {
-                // Up swipe
-                if (dy === 0) {
-                    dx = 0;
-                    dy = -1;
-                }
+                if (dy === 0) { dx = 0; dy = -1; }
             }
         }
         x1 = null;
         y1 = null;
-        event.preventDefault(); // Prevent scrolling
+        event.preventDefault();
     }
 
     function generateFood() {
         food = {
             x: Math.floor(Math.random() * (canvas.width / gridSize)),
             y: Math.floor(Math.random() * (canvas.height / gridSize)),
-            color: generateRandomBrightGray() // Food 생성 시 랜덤 무채색 할당
+            color: generateRandomBrightGray()
         };
     }
 
     function drawSnakePart(snakePart) {
-        // 각 마디에 할당된 고유 색상으로 칠함
         ctx.fillStyle = snakePart.color;
-        ctx.strokeStyle = '#101010'; // 테두리는 어두운 색으로 통일
+        ctx.strokeStyle = '#101010';
         ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
         ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
     }
 
     function drawFood() {
-        // Food에 할당된 색상으로 칠함
         ctx.fillStyle = food.color;
-        ctx.strokeStyle = '#101010'; // 테두리는 어두운 색으로 통일
+        ctx.strokeStyle = '#101010';
         ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
         ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
     }
 
     function draw() {
-        // 배경색을 약간 밝은 검은색으로 설정
-        ctx.fillStyle = '#141414'; // rgb(20, 20, 20)
+        ctx.fillStyle = '#141414';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         drawFood();
         snake.forEach(drawSnakePart);
         gameInfo.textContent = `Snake Game: Score: ${score}`;
     }
 
+    // ==================================================================
+    // ✨ 여기가 수정된 함수입니다. ✨
+    // ==================================================================
     function advanceSnake() {
-        // 새로운 머리 부분에 랜덤 유채색 할당
-        const head = {
-            x: snake[0].x + dx,
-            y: snake[0].y + dy,
-            color: generateRandomBrightColor()
-        };
-        snake.unshift(head);
+        const headPosition = { x: snake[0].x + dx, y: snake[0].y + dy };
 
-        const didEatFood = head.x === food.x && head.y === food.y;
+        const didEatFood = headPosition.x === food.x && headPosition.y === food.y;
         if (didEatFood) {
+            // 음식을 먹었을 경우: 새로운 색상을 가진 마디를 머리에 추가
             score += 10;
+            const newHead = { 
+                ...headPosition, 
+                color: generateRandomBrightColor() 
+            };
+            snake.unshift(newHead);
             generateFood();
         } else {
-            snake.pop();
+            // 음식을 먹지 않았을 경우: 꼬리를 떼서 머리 위치로 이동 (색상 유지)
+            const tail = snake.pop();
+            tail.x = headPosition.x;
+            tail.y = headPosition.y;
+            snake.unshift(tail);
         }
     }
 
@@ -172,28 +145,16 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
         const goingRight = dx === 1;
         const goingLeft = dx === -1;
 
-        if (keyPressed === LEFT_KEY && !goingRight) {
-            dx = -1;
-            dy = 0;
-        }
-        if (keyPressed === UP_KEY && !goingDown) {
-            dx = 0;
-            dy = -1;
-        }
-        if (keyPressed === RIGHT_KEY && !goingLeft) {
-            dx = 1;
-            dy = 0;
-        }
-        if (keyPressed === DOWN_KEY && !goingUp) {
-            dx = 0;
-            dy = 1;
-        }
+        if (keyPressed === LEFT_KEY && !goingRight) { dx = -1; dy = 0; }
+        if (keyPressed === UP_KEY && !goingDown) { dx = 0; dy = -1; }
+        if (keyPressed === RIGHT_KEY && !goingLeft) { dx = 1; dy = 0; }
+        if (keyPressed === DOWN_KEY && !goingUp) { dx = 0; dy = 1; }
     }
 
     function gameLoop() {
         if (didGameEnd()) {
             stopGame();
-            window.showGameOver("Game Over!", `Score: ${score}`); // Call global showGameOver
+            window.showGameOver("Game Over!", `Score: ${score}`);
             return;
         }
 
@@ -207,23 +168,19 @@ window.snake_gameGame = function(canvas, ctx, gameInfo) {
 
     function startGame(settings = {}) {
         if (!gameRunning) {
-            // Apply settings
             gameSpeed = settings.snakeSpeed || 100;
             gridSize = settings.gridSize || 20;
             const initialLength = settings.initialLength || 3;
-            const foodSpawnRate = settings.foodSpawnRate || 5; // Use this for future features
-
-            // Reset game state
+            
             snake = [];
             for (let i = 0; i < initialLength; i++) {
-                // 초기 snake의 각 마디에도 랜덤 유채색 할당
                 snake.push({
                     x: 10 - i,
                     y: 10,
                     color: generateRandomBrightColor()
                 });
             }
-            dx = 1; // Initial direction to the right
+            dx = 1;
             dy = 0;
             score = 0;
             generateFood();
