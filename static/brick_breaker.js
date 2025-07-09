@@ -112,6 +112,22 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         }
     }
 
+    // ==================================================================
+    // ✨ 여기가 추가된 함수입니다. ✨
+    // ==================================================================
+    /**
+     * 게임 내 통계(생명)를 캔버스에 직접 그립니다.
+     */
+    function drawGameStats() {
+        const scaleFactor = canvas.width / 600;
+        ctx.font = `${16 * scaleFactor}px Arial`;
+        ctx.fillStyle = "#E0E0E0";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText(`Lives: ${lives}`, 10, 10);
+    }
+
+
     // --- 게임 로직 ---
     function collisionDetection() {
         let allBricksBroken = true;
@@ -148,6 +164,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
         drawBall();
         drawPaddle();
         drawParticles();
+        drawGameStats(); // ✨ 통계 그리기 함수 호출
         collisionDetection();
 
         // 공 이동
@@ -170,9 +187,9 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
                 }
             } else if (ball.y > canvas.height - ball.radius) {
                 lives--;
+                updateGameInfo(); // 생명이 감소했으므로 정보 업데이트
                 if (lives > 0) {
                     resetBallAndPaddle();
-                    updateGameInfo();
                 } else {
                     stopGame();
                     globalScope.showGameOver("Game Over!", "You ran out of lives.");
@@ -219,7 +236,7 @@ window.brick_breakerGame = function(canvas, ctx, gameInfo, globalScope) {
 
         for (let c = 0; c < gameSettings.brickCols; c++) {
             bricks[c] = [];
-            for (let r = 0; r < gameSettings.brickRows; r++) {
+            for (let r = 0; r < gameSettings.brickRowCount; r++) { // brickRows -> brickRowCount (오타 수정)
                 bricks[c][r] = {
                     x: (c * (brickWidth + brickPadding)) + offsetLeft,
                     y: (r * (brickHeight + brickPadding)) + offsetTop,
