@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
             canvas.focus();
             document.body.classList.add('overflow-hidden');
         } else {
-            gameInfo.textContent = "Game not ready or start function missing.";
+            console.error("Game not ready or start function missing.");
         }
     }
 
