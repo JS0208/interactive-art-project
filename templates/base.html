@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Interactive Art{% endblock %}</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
         @layer base {
@@ -194,7 +193,7 @@
                         Theme
                         <svg class="-mr-1 ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.042-8.67l-.707-.707M10.95 18.67l-.707.707m8.67-8.042l.707-.707M18.67 10.95l.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
                     </button>
-                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
+                    <div id="theme-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden" style="z-index: 50;" role="menu" aria-orientation="vertical" aria-labelledby="theme-dropdown-button" tabindex="-1">
                         <div class="py-1" role="none">
                             <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-modern-clarity">Modern Clarity</button>
                             <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" tabindex="-1" id="theme-midnight-focus">Midnight Focus</button>
@@ -270,6 +269,17 @@
                     applyTheme(themeName);
                     themeDropdownMenu.classList.add('hidden');
                 });
+            }
+        });
+
+        // Spacebar to randomize theme
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName.toLowerCase() === 'input') return;
+
+            if (e.key === ' ') {
+                e.preventDefault();
+                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                applyTheme(randomTheme);
             }
         });
     </script>
