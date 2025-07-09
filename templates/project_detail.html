@@ -219,22 +219,26 @@
                 }
             });
         }
-        if (randomizeParamsBtn) {
-            randomizeParamsBtn.addEventListener('click', () => {
-                if (currentParams) {
-                    for (const key in currentParams) {
-                        const param = currentParams[key];
-                        if (param && param.element) {
-                            let randomValue;
-                            const step = param.step || 1;
-                            const numSteps = (param.max - param.min) / step;
-                            randomValue = param.min + Math.round(Math.random() * numSteps) * step;
-                            param.element.value = randomValue;
-                            if(param.valueSpan) param.valueSpan.textContent = randomValue;
-                        }
+        
+        // NEW: Randomize 로직을 함수로 분리
+        function randomizeParameters() {
+            if (currentParams) {
+                for (const key in currentParams) {
+                    const param = currentParams[key];
+                    if (param && param.element) {
+                        const step = param.step || 1;
+                        const numSteps = (param.max - param.min) / step;
+                        const randomValue = param.min + Math.round(Math.random() * numSteps) * step;
+                        param.element.value = randomValue;
+                        if(param.valueSpan) param.valueSpan.textContent = randomValue;
                     }
                 }
-            });
+            }
+        }
+
+        if (randomizeParamsBtn) {
+            // CHANGED: 분리된 함수를 이벤트 리스너에 연결
+            randomizeParamsBtn.addEventListener('click', randomizeParameters);
         }
 
         window.hideGameOver = function() { gameOverOverlay.classList.add('hidden'); };
@@ -294,27 +298,28 @@
         startGameBtn.addEventListener('click', handleStartGame);
         restartGameBtn.addEventListener('click', handleStartGame);
 
-        // Global restart key listener
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName.toLowerCase() === 'input') return;
 
+            // CHANGED: 'r' 키 핸들러가 handleStartGame을 직접 호출하도록 수정
             if (e.key.toLowerCase() === 'r') {
                 e.preventDefault();
                 if (gameModule && typeof gameModule.stopGame === 'function') {
                     gameModule.stopGame();
                 }
-                restartGameBtn.click();
+                handleStartGame();
             }
-            // NEW: Global randomize and restart key listener
+
+            // CHANGED: 't' 키 핸들러가 randomize 함수와 handleStartGame 함수를 직접 순차적으로 호출
             if (e.key.toLowerCase() === 't') {
                 e.preventDefault();
-                if (randomizeParamsBtn) {
-                    randomizeParamsBtn.click();
+                if (randomizeParamsBtn && !randomizeParamsBtn.disabled) {
+                    randomizeParameters(); // 1. 파라미터 무작위화 함수 직접 호출
                 }
                 if (gameModule && typeof gameModule.stopGame === 'function') {
-                    gameModule.stopGame();
+                    gameModule.stopGame(); // 2. 기존 게임 정지
                 }
-                restartGameBtn.click();
+                handleStartGame(); // 3. 새 설정으로 게임 재시작 함수 직접 호출
             }
         });
 
